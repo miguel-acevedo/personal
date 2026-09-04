@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import { PressToDiscover } from "@/components/DiscoveryExperiments";
 
 export default function TheDiscoveryProblem() {
   return (
@@ -22,11 +23,20 @@ export default function TheDiscoveryProblem() {
 
         <p className="text-foreground/80 leading-relaxed">
           The hard part is that you don&rsquo;t know what you don&rsquo;t know.
-          You don&rsquo;t know what a button does until you press it. You
-          don&rsquo;t know what a prompt can produce until you write it, hit go,
-          and watch it run. As long as capabilities stay locked behind a blank
-          text box, the possibilities stay invisible. That&rsquo;s a discovery
-          problem, and it&rsquo;s the one we&rsquo;re still stuck on.
+          You don&rsquo;t know what a button does until you press it.
+        </p>
+
+        <PressToDiscover />
+
+        <p className="text-foreground/80 leading-relaxed">
+          You don&rsquo;t know what a prompt can produce until you write it, hit go,
+          and watch it run.
+        </p>
+
+        <p className="text-foreground/80 leading-relaxed">
+          As long as capabilities stay locked behind a blank text box, the
+          possibilities stay invisible. That&rsquo;s a discovery problem, and
+          it&rsquo;s the one we&rsquo;re still stuck on.
         </p>
 
         <p className="text-foreground/80 leading-relaxed">
