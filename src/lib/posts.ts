@@ -9,24 +9,20 @@ export type Post = {
 // Order doesn't matter — POSTS is sorted by date (newest first) below.
 const ALL_POSTS: Post[] = [
   {
-    slug: "hello-world-v1",
-    title: "Hello World v1",
-    date: "2026-04-04",
-    description: "The very first post.",
-  },
-  {
-    slug: "hello-world-v2",
-    title: "Hello World v2",
-    date: "2026-04-05",
-    description: "A slightly more polished hello.",
-  },
-  {
-    slug: "ai-bandwidth-problem",
-    title: "AI Has a Bandwidth Problem",
-    date: "2026-08-25",
+    slug: "the-discovery-problem",
+    title: "The Discovery Problem",
+    date: "2026-09-03",
     description:
-      "AI can start more work than we can track. The bottleneck is shifting from machine capability to human attention.",
+      "The biggest bottleneck to AI adoption isn't intelligence. It's discovery. The system can do almost anything, but it still requires you to already know what to ask for.",
   },
+  // Temporarily hidden — kept for later.
+  // {
+  //   slug: "ai-bandwidth-problem",
+  //   title: "AI Has a Bandwidth Problem",
+  //   date: "2026-08-25",
+  //   description:
+  //     "AI can start more work than we can track. The bottleneck is shifting from machine capability to human attention.",
+  // },
 ];
 
 export const POSTS: Post[] = [...ALL_POSTS].sort((a, b) =>
