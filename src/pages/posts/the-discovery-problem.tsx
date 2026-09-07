@@ -23,10 +23,8 @@ export default function TheDiscoveryProblem() {
 
         <p className="text-foreground/80 leading-relaxed">
           The hard part is that you don&rsquo;t know what you don&rsquo;t know.
-          You don&rsquo;t know what a button does until you press it.
+          You don&rsquo;t know what a button does until you press it. <PressToDiscover />
         </p>
-
-        <PressToDiscover />
 
         <p className="text-foreground/80 leading-relaxed">
           You don&rsquo;t know what a prompt can produce until you write it, hit go,

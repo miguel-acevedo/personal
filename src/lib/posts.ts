@@ -15,16 +15,24 @@ const ALL_POSTS: Post[] = [
     description:
       "The biggest bottleneck to AI adoption isn't intelligence. It's discovery. The system can do almost anything, but it still requires you to already know what to ask for.",
   },
-  // Temporarily hidden — kept for later.
-  // {
-  //   slug: "ai-bandwidth-problem",
-  //   title: "AI Has a Bandwidth Problem",
-  //   date: "2026-08-25",
-  //   description:
-  //     "AI can start more work than we can track. The bottleneck is shifting from machine capability to human attention.",
-  // },
+];
+
+// Unpublished drafts. Not listed under /posts, but viewable at /drafts and
+// via their direct /posts/<slug> URL. Move an entry into ALL_POSTS to publish.
+const ALL_DRAFTS: Post[] = [
+  {
+    slug: "ai-bandwidth-problem",
+    title: "AI Has a Bandwidth Problem",
+    date: "2026-08-25",
+    description:
+      "AI can start more work than we can track. The bottleneck is shifting from machine capability to human attention.",
+  },
 ];
 
 export const POSTS: Post[] = [...ALL_POSTS].sort((a, b) =>
+  b.date.localeCompare(a.date)
+);
+
+export const DRAFTS: Post[] = [...ALL_DRAFTS].sort((a, b) =>
   b.date.localeCompare(a.date)
 );
