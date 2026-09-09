@@ -44,7 +44,7 @@ export default function TheDiscoveryProblem() {
 
         <p className="text-foreground/80 leading-relaxed">
           There are partial fixes. Templates give people something to run
-          without needing to invent the request themselves — but then the
+          without needing to invent the request themselves. But then the
           question becomes relevance. Do these templates actually match your
           work? Do you care? Context helps too: a system that knows about you can
           suggest things that matter to you instead of things that matter in
@@ -56,7 +56,7 @@ export default function TheDiscoveryProblem() {
           bottom of the Grand Canyon. You look up, and your entire notion of the
           sky is a thin sliver of blue between two canyon walls. Someone standing
           on the rim sees the whole blue plane. Same sky, completely different
-          sense of what exists. It&rsquo;s not that the ant is less capable — it
+          sense of what exists. It&rsquo;s not that the ant is less capable. It
           just can&rsquo;t see the axis of possibility from where it&rsquo;s
           standing.
         </p>
@@ -79,7 +79,7 @@ export default function TheDiscoveryProblem() {
           That&rsquo;s the gap between a skilled AI user and everyone else. Take
           a non-technical marketing person and someone fluent in agents and tool
           use. The agent-fluent person can watch the marketer work for an hour
-          and immediately see a dozen things to automate, delegate, or reinvent —
+          and immediately see a dozen things to automate, delegate, or reinvent,
           including things the marketer hasn&rsquo;t even tried yet. But put the
           most intelligent tool in the world in front of the marketer, and
           they&rsquo;re staring at a blank prompt, unsure what to type. All that
