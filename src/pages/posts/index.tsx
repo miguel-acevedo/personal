@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Layout from "@/components/Layout";
+import EmailSubscribe from "@/components/EmailSubscribe";
 import { POSTS } from "@/lib/posts";
 
 export default function PostsIndex() {
@@ -27,6 +28,8 @@ export default function PostsIndex() {
           </li>
         ))}
       </ul>
+
+      <EmailSubscribe location="posts_index" />
     </Layout>
   );
 }
