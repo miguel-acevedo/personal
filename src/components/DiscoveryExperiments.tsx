@@ -37,6 +37,56 @@ function getRevealMessage(
   return `${FINAL_REVEAL_LEAD} ${FINAL_REVEAL_EMPHASIS}`;
 }
 
+export function WatchClip({
+  videoId,
+  start,
+  label = "Watch the clip",
+  caption,
+}: {
+  videoId: string;
+  start?: number;
+  label?: string;
+  caption?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0${
+    start ? `&start=${start}&autoplay=1` : ""
+  }`;
+
+  return (
+    <figure className="not-prose my-4">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-foreground/30 bg-background/60 px-3 py-1 text-sm font-medium leading-none text-foreground transition-colors hover:bg-foreground hover:text-background"
+      >
+        {open ? "Hide clip" : label}
+      </button>
+      {open ? (
+        <div className="animate-in fade-in duration-500">
+          <div className="mt-3 overflow-hidden rounded-lg ring-1 ring-sky-300/40 shadow-[0_0_50px_-12px_rgba(56,189,248,0.55)]">
+            <div className="relative aspect-video">
+              <iframe
+                src={src}
+                title="Alan Kay — the pink plane and thoughts as ants"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+          {caption ? (
+            <figcaption className="mt-2 text-xs text-muted-foreground">
+              {caption}
+            </figcaption>
+          ) : null}
+        </div>
+      ) : null}
+    </figure>
+  );
+}
+
 export function PressToDiscover() {
   const [pressCount, setPressCount] = useState(0);
   const [emphasizeFinalPhrase, setEmphasizeFinalPhrase] = useState(false);

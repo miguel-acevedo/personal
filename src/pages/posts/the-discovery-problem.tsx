@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
-import { PressToDiscover } from "@/components/DiscoveryExperiments";
+import { PressToDiscover, WatchClip } from "@/components/DiscoveryExperiments";
 
 export default function TheDiscoveryProblem() {
   return (
@@ -67,6 +67,12 @@ export default function TheDiscoveryProblem() {
           width={1448}
           height={1086}
           className="w-full h-auto rounded-lg"
+        />
+
+        <WatchClip
+          videoId="oKg1hTOQXoY"
+          start={1043}
+          label="Watch Alan Kay explain it"
         />
 
         <p className="text-foreground/80 leading-relaxed">
