@@ -3,6 +3,9 @@ import Image from "next/image";
 import Layout from "@/components/Layout";
 import { PressToDiscover, WatchClip } from "@/components/DiscoveryExperiments";
 
+// Flip to true to surface the HN discussion link (pending the thread's flag).
+const SHOW_HN_DISCUSSION = false;
+
 export default function TheDiscoveryProblem() {
   return (
     <Layout
@@ -20,6 +23,21 @@ export default function TheDiscoveryProblem() {
             The Discovery Problem
           </h1>
         </header>
+
+        {SHOW_HN_DISCUSSION && (
+          <p className="border-b pb-4 text-sm text-muted-foreground">
+            See the{" "}
+            <a
+              href="https://news.ycombinator.com/item?id=49621223"
+              className="underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              discussion
+            </a>{" "}
+            on Hacker News.
+          </p>
+        )}
 
         <p className="text-foreground/80 leading-relaxed">
           The biggest bottleneck to AI adoption is a simple question: what can
