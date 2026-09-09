@@ -7,14 +7,18 @@ export default function Home() {
     <Layout>
       <section className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight">Hello.</h1>
-        <p className="text-muted-foreground">
-          A simple, minimal site. Thoughts and notes.
+        <p className="text-foreground/80 leading-relaxed">
+          I build and write about AI adoption. More{" "}
+          <Link href="/about" className="underline">
+            about me
+          </Link>
+          .
         </p>
       </section>
 
       <section className="mt-12">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-          Recent posts
+          Writing
         </h2>
         <ul className="space-y-3">
           {POSTS.map((post) => (
