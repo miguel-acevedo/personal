@@ -3,7 +3,11 @@ import Layout from "@/components/Layout";
 
 export default function WhatAreWeNotDoing() {
   return (
-    <Layout title="What Are We Not Doing?">
+    <Layout
+      title="What Are We Not Doing?"
+      description="A capable tool doesn't make people revisit the boundaries that resource constraints drew. The system should help people discover what they can now attempt."
+      appendSiteName={false}
+    >
       <article className="space-y-4">
         <header className="space-y-2">
           <p className="text-xs text-muted-foreground tabular-nums">

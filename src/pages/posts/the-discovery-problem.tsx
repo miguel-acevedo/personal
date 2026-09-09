@@ -5,7 +5,12 @@ import { PressToDiscover } from "@/components/DiscoveryExperiments";
 
 export default function TheDiscoveryProblem() {
   return (
-    <Layout title="The Discovery Problem">
+    <Layout
+      title="The Discovery Problem"
+      description="The biggest bottleneck to AI adoption isn't intelligence. It's discovery. The system can do almost anything, but it still requires you to already know what to ask for."
+      image="/posts/ant-rim.png"
+      appendSiteName={false}
+    >
       <article className="space-y-4">
         <header className="space-y-2">
           <p className="text-xs text-muted-foreground tabular-nums">

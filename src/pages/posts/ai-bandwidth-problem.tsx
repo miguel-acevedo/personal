@@ -4,7 +4,12 @@ import Layout from "@/components/Layout";
 
 export default function AiBandwidthProblem() {
   return (
-    <Layout title="AI Has a Bandwidth Problem">
+    <Layout
+      title="AI Has a Bandwidth Problem"
+      description="AI can start more work than we can track. The bottleneck is shifting from machine capability to human attention."
+      image="/posts/ai-bandwidth-problem.png"
+      appendSiteName={false}
+    >
       <article className="space-y-4">
         <header className="space-y-2">
           <p className="text-xs text-muted-foreground tabular-nums">
