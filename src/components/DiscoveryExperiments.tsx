@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import posthog from "posthog-js";
 
 const BACKGROUNDS = [
   "oklch(0.96 0.035 78)",
@@ -15,6 +16,10 @@ const FIRST_REVEALS = [
 
 const FINAL_REVEAL_LEAD = "You had to try it to find out.";
 const FINAL_REVEAL_EMPHASIS = "Surprise is where discovery begins.";
+const POSTHOG_CONFIGURED = Boolean(
+  process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+    process.env.NEXT_PUBLIC_POSTHOG_HOST,
+);
 
 function getRevealMessage(
   pressCount: number,
@@ -53,11 +58,19 @@ export function WatchClip({
     start ? `&start=${start}&autoplay=1` : ""
   }`;
 
+  const handleClipToggle = () => {
+    if (!open && POSTHOG_CONFIGURED) {
+      posthog.capture("clip_opened", { video_id: videoId });
+    }
+
+    setOpen(!open);
+  };
+
   return (
     <figure className="not-prose my-4">
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={handleClipToggle}
         aria-expanded={open}
         className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-foreground/30 bg-background/60 px-3 py-1 text-sm font-medium leading-none text-foreground transition-colors hover:bg-foreground hover:text-background"
       >
@@ -147,6 +160,11 @@ export function PressToDiscover() {
     }
 
     lastPressTime.current = now;
+
+    if (pressCount === 7 && POSTHOG_CONFIGURED) {
+      posthog.capture("discovery_completed");
+    }
+
     setPressCount((count) => count + 1);
   };
 
