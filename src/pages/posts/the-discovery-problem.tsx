@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import { PressToDiscover, WatchClip } from "@/components/DiscoveryExperiments";
 
 // Flip to true to surface the HN discussion link (pending the thread's flag).
-const SHOW_HN_DISCUSSION = false;
+const SHOW_HN_DISCUSSION = true;
 
 export default function TheDiscoveryProblem() {
   return (
