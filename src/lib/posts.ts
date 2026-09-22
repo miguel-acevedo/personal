@@ -9,6 +9,13 @@ export type Post = {
 // Order doesn't matter — POSTS is sorted by date (newest first) below.
 const ALL_POSTS: Post[] = [
   {
+    slug: "discovery-by-example",
+    title: "Discovery by Example",
+    date: "2026-09-22",
+    description:
+      "Discovery is mostly a problem of imagination, and nobody imagines from nothing. Show someone one concrete example and they start finding what they actually want.",
+  },
+  {
     slug: "what-are-we-not-doing",
     title: "What Are We Not Doing?",
     date: "2026-09-07",
