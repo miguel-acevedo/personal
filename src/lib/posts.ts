@@ -35,6 +35,13 @@ const ALL_POSTS: Post[] = [
 // via their direct /posts/<slug> URL. Move an entry into ALL_POSTS to publish.
 const ALL_DRAFTS: Post[] = [
   {
+    slug: "discovery-by-example-astra",
+    title: "Discovery by Example — Astra",
+    date: "2026-09-22",
+    description:
+      "An alternate draft following Christy's business goal through onboarding, personalized examples, and the recommendation panel.",
+  },
+  {
     slug: "ai-bandwidth-problem",
     title: "AI Has a Bandwidth Problem",
     date: "2026-08-25",
