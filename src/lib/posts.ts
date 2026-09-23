@@ -16,13 +16,6 @@ const ALL_POSTS: Post[] = [
       "Discovery is mostly a problem of imagination, and nobody imagines from nothing. Show someone one concrete example and they start finding what they actually want.",
   },
   {
-    slug: "what-are-we-not-doing",
-    title: "What Are We Not Doing?",
-    date: "2026-09-07",
-    description:
-      "A capable tool doesn't make people revisit the boundaries that resource constraints drew. The system should help people discover what they can now attempt.",
-  },
-  {
     slug: "the-discovery-problem",
     title: "The Discovery Problem",
     date: "2026-09-03",
@@ -34,6 +27,20 @@ const ALL_POSTS: Post[] = [
 // Unpublished drafts. Not listed under /posts, but viewable at /drafts and
 // via their direct /posts/<slug> URL. Move an entry into ALL_POSTS to publish.
 const ALL_DRAFTS: Post[] = [
+  {
+    slug: "what-are-we-not-doing",
+    title: "What Are We Not Doing?",
+    date: "2026-09-07",
+    description:
+      "A capable tool doesn't make people revisit the boundaries that resource constraints drew. The system should help people discover what they can now attempt.",
+  },
+  {
+    slug: "discovery-by-example-old",
+    title: "Discovery by Example — Old",
+    date: "2026-09-22",
+    description:
+      "The earlier version, with the Cassandra recommendation panel and no onboarding flow.",
+  },
   {
     slug: "discovery-by-example-astra",
     title: "Discovery by Example — Astra",

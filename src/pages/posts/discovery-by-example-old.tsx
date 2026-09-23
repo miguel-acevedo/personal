@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
-import { FlowStepper } from "@/components/FlowStepper";
 
-export default function DiscoveryByExampleOpus() {
+export default function DiscoveryByExampleOld() {
   return (
     <Layout
       title="Discovery by Example"
@@ -81,60 +80,6 @@ export default function DiscoveryByExampleOpus() {
         </p>
 
         <p className="text-foreground/80 leading-relaxed">
-          Here&rsquo;s a small business owner who runs a family maple syrup
-          farm in southwest Michigan. Introducing herself in an online
-          community, she wrote:
-        </p>
-
-        <blockquote className="border-l-2 pl-4 italic text-foreground/70 leading-relaxed">
-          I really want to learn how to make AI work to make our businesses flow
-          better and get better recognition to see more sales; I don&rsquo;t
-          have all the brain space to do all the marketing that needs to be
-          done. Show me how.
-        </blockquote>
-
-        <p className="text-foreground/80 leading-relaxed">
-          She knows her problem. She doesn&rsquo;t know what to ask for. She
-          has never used our product, so as a demonstration we ran her public
-          website through the flow ourselves, along with one vague sentence
-          like the one she might type.
-        </p>
-
-        <FlowStepper
-          steps={[
-            {
-              label: "Her website",
-              caption: "She shares her website and one sentence.",
-              src: "/posts/maple-farm-flow-1-input.png",
-              alt: "An onboarding form with the Maple Row Sugarhouse website entered and the note: i want AI to help with marketing and increase my sales.",
-              width: 2000,
-              height: 1261,
-            },
-            {
-              label: "Reading her site",
-              caption: "We browse her site and learn who she is and who she serves.",
-              src: "/posts/maple-farm-flow-2-reading.png",
-              alt: "The system scanning the Maple Row Sugarhouse website while listing what it has learned: a family-owned maple producer since 2011, based in southwest Michigan, serving gift buyers and festival visitors.",
-              width: 2000,
-              height: 1366,
-            },
-            {
-              label: "Ideas for her",
-              caption: "A few widget ideas built around her events, products, and town.",
-              src: "/posts/maple-farm-flow-3-ideas.png",
-              alt: "Widget ideas for the farm: a planner for its Maple Education Weekend, Instagram engagement on a maple gift box post, and a watch on local maple market conversation.",
-              width: 1788,
-              height: 1376,
-            },
-          ]}
-        />
-
-        <p className="text-foreground/80 leading-relaxed">
-          None of these has to be exactly right. Each is specific enough to her
-          farm that she has something to react to instead of a blank page.
-        </p>
-
-        <p className="text-foreground/80 leading-relaxed">
           One of the people we showed these to was Cassandra, who runs
           businesses in executive relocation and land-use consulting in Las
           Vegas. One widget got her thinking about how to introduce herself to
@@ -190,11 +135,11 @@ export default function DiscoveryByExampleOpus() {
         </p>
 
         <Image
-          src="/posts/maple-farm-recommendation-panel.png"
-          alt="A recommendation panel asking what deserves your attention, with an open field and example widgets for a maple syrup farm focused on marketing and sales."
+          src="/posts/discovery-recommendation-panel.png"
+          alt="A recommendation panel asking what deserves your attention, with an open field and a set of example widgets for an executive-relocation business."
           width={2000}
-          height={1175}
-          className="w-full h-auto max-w-none rounded-lg lg:-mx-24 lg:w-[calc(100%+12rem)]"
+          height={1172}
+          className="w-full h-auto rounded-lg"
         />
 
         <p className="text-foreground/80 leading-relaxed">
