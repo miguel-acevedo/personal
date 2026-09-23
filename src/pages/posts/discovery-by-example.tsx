@@ -7,7 +7,7 @@ export default function DiscoveryByExample() {
     <Layout
       title="Discovery by Example"
       description="Discovery is mostly a problem of imagination, and nobody imagines from nothing. Show someone one concrete example and they start finding what they actually want."
-      image="/posts/few-widget-ideas-og.png"
+      image="/posts/cas-widget-ideas-og.png"
       appendSiteName={false}
     >
       <article className="space-y-4">
@@ -121,12 +121,9 @@ export default function DiscoveryByExample() {
 
         <p className="text-foreground/80 leading-relaxed">
           Michelle, a realtor Cassandra referred to us, saw an example about
-          local knowledge and started describing the newsletter she writes and
-          the hours she spends collecting community events for it. She wanted
-          events near her clients&rsquo; neighborhoods and not the Strip, then
-          companies relocating to the area, then developments that had just been
-          permitted. Her goal: &ldquo;be ahead of what&rsquo;s going on in Las
-          Vegas and in Henderson.&rdquo;
+          local knowledge and immediately connected it to the community events
+          she gathers for her newsletter. Nothing we&rsquo;d shown her was about
+          newsletters.
         </p>
 
         <p className="text-foreground/80 leading-relaxed">
