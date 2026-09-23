@@ -8,7 +8,7 @@ export default function DiscoveryByExample() {
     <Layout
       title="Discovery by Example"
       description="Discovery is mostly a problem of imagination, and nobody imagines from nothing. Show someone one concrete example and they start finding what they actually want."
-      image="/posts/example_widget_hn.png"
+      image="/posts/few-widget-ideas-og.png"
       appendSiteName={false}
     >
       <article className="space-y-4">
