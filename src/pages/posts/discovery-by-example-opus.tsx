@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import { FlowStepper } from "@/components/FlowStepper";
 
-export default function DiscoveryByExample() {
+export default function DiscoveryByExampleOpus() {
   return (
     <Layout
       title="Discovery by Example"
@@ -79,13 +80,59 @@ export default function DiscoveryByExample() {
           what they do, with sample data.
         </p>
 
-        <Image
-          src="/posts/cas_onboarding_flow_1v2.png"
-          alt="The onboarding flow scanning the DoorEstate website and turning it into widget ideas: an arrival and access calendar, a vendor and installation watchlist, and a move readiness command center."
-          width={1038}
-          height={688}
-          className="w-full h-auto rounded-lg"
+        <p className="text-foreground/80 leading-relaxed">
+          Here&rsquo;s a small business owner who runs a family maple syrup
+          farm in southwest Michigan. Introducing herself in an online
+          community, she wrote:
+        </p>
+
+        <blockquote className="border-l-2 pl-4 italic text-foreground/70 leading-relaxed">
+          I really want to learn how to make AI work to make our businesses flow
+          better and get better recognition to see more sales; I don&rsquo;t
+          have all the brain space to do all the marketing that needs to be
+          done. Show me how.
+        </blockquote>
+
+        <p className="text-foreground/80 leading-relaxed">
+          She knows her problem. She doesn&rsquo;t know what to ask for. She
+          has never used our product, so as a demonstration we ran her public
+          website through the flow ourselves, along with one vague sentence
+          like the one she might type.
+        </p>
+
+        <FlowStepper
+          steps={[
+            {
+              label: "Her website",
+              caption: "She shares her website and one sentence.",
+              src: "/posts/maple-farm-flow-1-input.png",
+              alt: "An onboarding form with the Maple Row Sugarhouse website entered and the note: i want AI to help with marketing and increase my sales.",
+              width: 2000,
+              height: 1261,
+            },
+            {
+              label: "Reading her site",
+              caption: "We browse her site and learn who she is and who she serves.",
+              src: "/posts/maple-farm-flow-2-reading.png",
+              alt: "The system scanning the Maple Row Sugarhouse website while listing what it has learned: a family-owned maple producer since 2011, based in southwest Michigan, serving gift buyers and festival visitors.",
+              width: 2000,
+              height: 1366,
+            },
+            {
+              label: "Ideas for her",
+              caption: "A few widget ideas built around her events, products, and town.",
+              src: "/posts/maple-farm-flow-3-ideas.png",
+              alt: "Widget ideas for the farm: a planner for its Maple Education Weekend, Instagram engagement on a maple gift box post, and a watch on local maple market conversation.",
+              width: 1788,
+              height: 1376,
+            },
+          ]}
         />
+
+        <p className="text-foreground/80 leading-relaxed">
+          None of these has to be exactly right. Each is specific enough to her
+          farm that she has something to react to instead of a blank page.
+        </p>
 
         <p className="text-foreground/80 leading-relaxed">
           One of the people we showed these to was Cassandra, who runs
@@ -98,25 +145,11 @@ export default function DiscoveryByExample() {
           know and listing other things she could track.
         </p>
 
-        <Image
-          src="/posts/cas_onboarding_flow_2.png"
-          alt="Widget ideas for DoorEstate with sample previews: Las Vegas relocation signals from LinkedIn, an open relocation opportunity watch from local news, and Gmail widgets for priority relocation conversations and vendor readiness."
-          width={1702}
-          height={1310}
-          className="w-full h-auto rounded-lg"
-        />
-
         <p className="text-foreground/80 leading-relaxed">
-          She went home and built one. Six hours later she emailed us: a
-          manufacturer had announced two months earlier that it was relocating
-          to her city, she hadn&rsquo;t known, and she&rsquo;d already set a
-          30-day plan.
-        </p>
-
-        <p className="text-foreground/80 leading-relaxed">
-          The examples didn&rsquo;t have to capture exactly what she wanted. They
-          were concrete enough for her to see her own business in them, and
-          that&rsquo;s what let her make the connections herself.
+          She went home and built one. Six hours later she emailed us: it had
+          turned up a manufacturer that announced two months earlier it was
+          relocating to her city. She hadn&rsquo;t known, and she&rsquo;d
+          already set a 30-day plan.
         </p>
 
         <p className="text-foreground/80 leading-relaxed">
@@ -151,11 +184,11 @@ export default function DiscoveryByExample() {
         </p>
 
         <Image
-          src="/posts/cas_onboarding_flow_3.png"
-          alt="A recommendation panel asking what deserves your attention, with an open field and recommended widgets for DoorEstate's executive relocation work in Las Vegas."
-          width={2307}
-          height={1331}
-          className="w-full h-auto rounded-lg"
+          src="/posts/maple-farm-recommendation-panel.png"
+          alt="A recommendation panel asking what deserves your attention, with an open field and example widgets for a maple syrup farm focused on marketing and sales."
+          width={2000}
+          height={1175}
+          className="w-full h-auto max-w-none rounded-lg lg:-mx-24 lg:w-[calc(100%+12rem)]"
         />
 
         <p className="text-foreground/80 leading-relaxed">

@@ -42,6 +42,13 @@ const ALL_DRAFTS: Post[] = [
       "The earlier version, with the Cassandra recommendation panel and no onboarding flow.",
   },
   {
+    slug: "discovery-by-example-opus",
+    title: "Discovery by Example — Opus",
+    date: "2026-09-22",
+    description:
+      "The version with the maple farm onboarding flow and recommendation panel.",
+  },
+  {
     slug: "discovery-by-example-astra",
     title: "Discovery by Example — Astra",
     date: "2026-09-22",
