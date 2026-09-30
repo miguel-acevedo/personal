@@ -2,12 +2,22 @@ import Link from "next/link";
 import Layout from "@/components/Layout";
 import { POSTS } from "@/lib/posts";
 
-const WORK: { name: string; href?: string; description: string }[] = [
+const WORK: {
+  name: string;
+  href?: string;
+  description: string;
+  demoHref?: string;
+}[] = [
   {
-    name: "MarbleOS",
-    href: "https://marbleos.com",
-    // description: "widgets that watch your work and keep it current",
-    description: "helping people discover what AI can do for them",
+    name: "MarbleOS widgets",
+    href: "https://marbleos.com/home",
+    description:
+      "a dashboard of live widgets that keep an eye on what you care about, with onboarding that proposes examples from your business",
+  },
+  {
+    name: "MarbleOS desktop",
+    description: "an earlier AI workspace exploring new interaction patterns",
+    demoHref: "https://marbleos.com/demo",
   },
   {
     name: "Marble learning platform",
@@ -75,7 +85,27 @@ export default function Home() {
               ) : (
                 <span>{item.name}</span>
               )}
-              <span className="text-foreground/80"> — {item.description}</span>
+              <span className="text-foreground/80">
+                {" "}
+                — {item.description}
+                {item.demoHref && (
+                  <>
+                    {" "}
+                    <span className="whitespace-nowrap">
+                      (
+                      <a
+                        href={item.demoHref}
+                        className="underline decoration-foreground/25 underline-offset-4 transition-colors hover:decoration-foreground"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        2-min demo
+                      </a>
+                      )
+                    </span>
+                  </>
+                )}
+              </span>
             </li>
           ))}
         </ul>
