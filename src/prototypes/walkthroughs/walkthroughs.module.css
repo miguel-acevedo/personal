@@ -80,18 +80,36 @@
   cursor: default;
 }
 
+/* The padding gives the thin track a comfortable click and drag target. */
 .progress {
   flex: 1;
-  height: 4px;
-  background: #2a2a2e;
-  border-radius: 2px;
-  overflow: hidden;
+  padding: 10px 0;
+  cursor: pointer;
+  touch-action: none;
 }
 
-.progress div {
+.progress:focus-visible {
+  outline: 2px solid #d97757;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.track {
+  height: 4px;
+  background: #2a2a2e;
+  border-radius: 3px;
+  overflow: hidden;
+  transition: height 0.15s ease;
+}
+
+.progress:hover .track {
+  height: 6px;
+}
+
+.track div {
   height: 100%;
   background: #d97757;
-  transition: width 0.4s ease;
+  transition: width 0.2s ease;
 }
 
 .stepCount {
@@ -118,6 +136,40 @@
 /* ---------- Stage ---------- */
 .stageWrap {
   position: relative;
+}
+
+.stageToggle {
+  cursor: pointer;
+}
+
+/* Brief play/pause icon when the stage is clicked. */
+.flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: flash 0.6s ease-out;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 1;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 .desktop {

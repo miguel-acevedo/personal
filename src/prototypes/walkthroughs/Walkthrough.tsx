@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { duration, stateAt, type State } from "./engine";
 import type { Spec } from "./types";
@@ -73,6 +73,7 @@ function Player({
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [run, setRun] = useState(0);
+  const [flash, setFlash] = useState(0);
   const [hint, setHint] = useState<{ folder: string; text: string } | null>(null);
   const last = spec.steps.length - 1;
 
@@ -98,6 +99,14 @@ function Player({
     setStep(i);
   };
 
+  // Playback is step-based, so a point on the bar maps to the nearest step.
+  const scrub = (e: PointerEvent<HTMLElement>) => {
+    const b = e.currentTarget.getBoundingClientRect();
+    const f = Math.min(Math.max((e.clientX - b.left) / b.width, 0), 1);
+    const i = Math.round(f * last);
+    if (i !== step) jump(i);
+  };
+
   const replay = () => {
     jump(0);
     setPlaying(true);
@@ -113,6 +122,13 @@ function Player({
 
   const waiting = !!base.waiting;
 
+  // Clicking the stage pauses and resumes, like a video. Not while the learner is
+  // answering or the end card is up, since those clicks belong to the desktop.
+  const toggle = () => {
+    setPlaying((p) => !p);
+    setFlash((n) => n + 1);
+  };
+
   return (
     <>
       <div className={s.main}>
@@ -121,6 +137,8 @@ function Player({
           state={state}
           spec={spec}
           onPick={waiting ? pick : undefined}
+          onToggle={!waiting && step < last ? toggle : undefined}
+          flash={flash ? { n: flash, playing } : null}
           onReplay={replay}
           next={next}
         />
@@ -139,8 +157,27 @@ function Player({
           <button className={s.button} onClick={replay} aria-label="Replay">
             <RotateCcw size={16} />
           </button>
-          <div className={s.progress}>
-            <div style={{ width: `${(step / last) * 100}%` }} />
+          <div
+            className={s.progress}
+            role="slider"
+            tabIndex={0}
+            aria-label="Step"
+            aria-valuemin={1}
+            aria-valuemax={last + 1}
+            aria-valuenow={step + 1}
+            onPointerDown={(e) => {
+              e.currentTarget.setPointerCapture(e.pointerId);
+              scrub(e);
+            }}
+            onPointerMove={(e) => e.buttons && scrub(e)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowLeft") jump(Math.max(step - 1, 0));
+              if (e.key === "ArrowRight") jump(Math.min(step + 1, last));
+            }}
+          >
+            <div className={s.track}>
+              <div style={{ width: `${(step / last) * 100}%` }} />
+            </div>
           </div>
           <span className={s.stepCount}>
             {waiting ? "Your move · " : ""}
@@ -160,12 +197,16 @@ function Stage({
   state,
   spec,
   onPick,
+  onToggle,
+  flash,
   onReplay,
   next,
 }: {
   state: State;
   spec: Spec;
   onPick?: (name: string) => void;
+  onToggle?: () => void;
+  flash: { n: number; playing: boolean } | null;
   onReplay: () => void;
   next: { label: string; go: () => void };
 }) {
@@ -217,7 +258,17 @@ function Stage({
   }, [state, scale]);
 
   return (
-    <div ref={wrap} className={s.stageWrap} style={{ height: H * scale }}>
+    <div
+      ref={wrap}
+      className={`${s.stageWrap} ${onToggle ? s.stageToggle : ""}`}
+      style={{ height: H * scale }}
+      onClick={onToggle}
+    >
+      {flash && (
+        <div key={flash.n} className={s.flash}>
+          {flash.playing ? <Play size={28} /> : <Pause size={28} />}
+        </div>
+      )}
       <div
         ref={stage}
         className={s.desktop}
