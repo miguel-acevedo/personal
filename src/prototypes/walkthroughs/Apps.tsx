@@ -1,4 +1,4 @@
-import type { DragEvent, ReactNode } from "react";
+import { useEffect, useState, type DragEvent, type ReactNode } from "react";
 import {
   ArrowUp,
   Blocks,
@@ -68,7 +68,93 @@ export function Window({
   );
 }
 
+type Battery = { level: number; charging: boolean };
+type BatteryManager = Battery & EventTarget;
+
+// The viewer's own clock, refreshed every few seconds so the minute flips on time.
+function useClock() {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const t = setInterval(tick, 5000);
+    return () => clearInterval(t);
+  }, []);
+  return now;
+}
+
+// The viewer's battery, where the browser exposes it (Chromium only). Elsewhere it
+// stays null and the menu bar leaves the battery out rather than invent a level.
+function useBattery() {
+  const [battery, setBattery] = useState<Battery | null>(null);
+  useEffect(() => {
+    const nav = navigator as Navigator & { getBattery?: () => Promise<BatteryManager> };
+    if (!nav.getBattery) return;
+    let manager: BatteryManager | null = null;
+    const update = () =>
+      manager && setBattery({ level: manager.level, charging: manager.charging });
+    nav
+      .getBattery()
+      .then((b) => {
+        manager = b;
+        update();
+        b.addEventListener("levelchange", update);
+        b.addEventListener("chargingchange", update);
+      })
+      .catch(() => {});
+    return () => {
+      manager?.removeEventListener("levelchange", update);
+      manager?.removeEventListener("chargingchange", update);
+    };
+  }, []);
+  return battery;
+}
+
+// macOS-style battery: thin outline, soft fill, and when charging a bolt cut out of the
+// fill with a transparent gap around it (the mask), so the menu bar shows through.
+function BatteryIcon({ level, charging }: Battery) {
+  const low = level <= 0.2 && !charging;
+  const bolt = "M14 0.8 8 7.4h3.9l-1.6 4.8 6-6.6h-3.9z";
+  return (
+    <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden>
+      {charging && (
+        <mask id="wt-battery-cut">
+          <rect width="27" height="13" fill="#fff" />
+          <path d={bolt} fill="#000" stroke="#000" strokeWidth="2.2" strokeLinejoin="round" />
+        </mask>
+      )}
+      <g mask={charging ? "url(#wt-battery-cut)" : undefined}>
+        <rect
+          x="0.5"
+          y="0.5"
+          width="23"
+          height="12"
+          rx="3.6"
+          fill="none"
+          stroke="#fff"
+          strokeOpacity="0.5"
+        />
+        <path d="M25 4.6c.9.2 1.4.9 1.4 1.9s-.5 1.7-1.4 1.9z" fill="#fff" fillOpacity="0.5" />
+        <rect
+          x="2"
+          y="2"
+          width={Math.max(20 * level, 1.5)}
+          height="9"
+          rx="2"
+          fill={low ? "#ff453a" : "#fff"}
+          fillOpacity={low ? 1 : 0.85}
+        />
+      </g>
+      {charging && <path d={bolt} fill="#fff" />}
+    </svg>
+  );
+}
+
 export function MenuBar() {
+  const now = useClock();
+  const battery = useBattery();
+  const pct = battery && Math.round(battery.level * 100);
+
   return (
     <div className={s.menuBar}>
       <div className={s.menuGroup}>
@@ -80,7 +166,20 @@ export function MenuBar() {
         <span>Window</span>
       </div>
       <div className={s.menuGroup}>
-        <span>Mon 7:42 AM</span>
+        {battery && (
+          <span className={s.battery} title={`${pct}%`}>
+            <BatteryIcon level={battery.level} charging={battery.charging} />
+          </span>
+        )}
+        {now && (
+          <span>
+            {now
+              .toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })
+              .replace(",", "")}
+            {"  "}
+            {now.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -238,9 +337,7 @@ export function Claude({
           className={`${s.conversation} ${state.menu ? s.conversationRaised : ""}`}
           data-wt="claude.conversation"
         >
-          {blocks.length === 0 && (
-            <div className={s.claudeEmpty}>What should we work on?</div>
-          )}
+          {blocks.length === 0 && <div className={s.claudeEmpty}>What should we work on?</div>}
           {blocks.map((b, i) => {
             if (b.kind === "user")
               return (
@@ -283,11 +380,7 @@ export function Claude({
                     {b.items.length} drafts · saved in {b.connector} · not sent
                   </div>
                   {b.items.map((d, j) => (
-                    <div
-                      key={d.to}
-                      className={s.draft}
-                      style={{ animationDelay: `${j * 0.35}s` }}
-                    >
+                    <div key={d.to} className={s.draft} style={{ animationDelay: `${j * 0.35}s` }}>
                       <div className={s.draftHead}>
                         <b>{d.to}</b>
                         <span>{d.subject}</span>
@@ -315,10 +408,7 @@ export function Claude({
           })}
         </div>
 
-        <div
-          className={`${s.composer} ${onDrop ? s.dropTarget : ""}`}
-          data-wt="claude.composer"
-        >
+        <div className={`${s.composer} ${onDrop ? s.dropTarget : ""}`} data-wt="claude.composer">
           <div className={s.composerText}>
             {state.composer ? (
               <Typed text={state.composer} cps={TYPE_CPS} caret />
@@ -413,7 +503,11 @@ export function Claude({
               {connectors.map((c) => {
                 const done = state.connectors[c.name]?.connected;
                 return (
-                  <div key={c.name} className={s.connectorCard} data-wt={`directory.card:${c.name}`}>
+                  <div
+                    key={c.name}
+                    className={s.connectorCard}
+                    data-wt={`directory.card:${c.name}`}
+                  >
                     <span className={s.connectorIcon}>
                       <ConnectorLogo icon={c.icon} size={22} />
                     </span>

@@ -205,6 +205,17 @@
   font-weight: 500;
 }
 
+.menuGroup span {
+  white-space: pre;
+}
+
+.battery {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
 /* ---------- Window chrome ---------- */
 .window {
   position: absolute;
