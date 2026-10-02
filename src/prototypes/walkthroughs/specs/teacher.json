@@ -1,0 +1,62 @@
+{
+  "id": "teacher",
+  "title": "Hand Claude a folder, get back a lesson deck",
+  "learner": "High school biology teacher. Unit notes, lab data and last year's slides live in one folder on their Mac.",
+  "desktop": {
+    "folder": "Unit 3 – Cells",
+    "path": ["Documents", "Biology", "Unit 3 – Cells"],
+    "files": [
+      { "name": "Week 1 – Cell structure.docx", "kind": "docx", "modified": "Sep 22", "size": "48 KB" },
+      { "name": "Week 2 – Membranes.docx", "kind": "docx", "modified": "Sep 29", "size": "52 KB" },
+      { "name": "Reading – Cell membrane.pdf", "kind": "pdf", "modified": "Sep 18", "size": "1.2 MB" },
+      { "name": "Osmosis lab results.xlsx", "kind": "xlsx", "modified": "Yesterday", "size": "24 KB" },
+      { "name": "Unit 2 – Genetics.pptx", "kind": "pptx", "modified": "Sep 5", "size": "8.4 MB" }
+    ]
+  },
+  "steps": [
+    { "type": "caption", "text": "This is your Unit 3 folder: two weeks of notes, a reading, lab data and last unit's deck.", "focus": "finder" },
+    { "type": "cursor", "to": "finder.title" },
+    { "type": "caption", "text": "Give Claude the whole folder, not one file. It can read everything inside and save work back to it.", "focus": "claude.composer" },
+    { "type": "cursor", "to": "claude.composer", "carry": "Unit 3 – Cells" },
+    { "type": "attach", "folder": "Unit 3 – Cells" },
+    { "type": "caption", "text": "Describe the outcome you want, the way you'd brief a colleague.", "focus": "claude.composer" },
+    { "type": "type", "text": "Turn my Unit 3 notes into a 10-slide deck for Monday. Chart the osmosis lab results on one slide, and match the look of my Unit 2 deck." },
+    { "type": "cursor", "to": "claude.send", "click": true },
+    { "type": "send" },
+    { "type": "plan", "items": [
+      "Read both weeks of notes and the reading",
+      "Chart the osmosis lab results",
+      "Match the layout of Unit 2 – Genetics.pptx",
+      "Build 10 slides with speaker notes, save to this folder"
+    ] },
+    { "type": "caption", "text": "Claude shows its plan before it starts. You can redirect it here.", "focus": "claude.plan" },
+    { "type": "caption", "text": "Then it works through your files.", "focus": "claude.conversation" },
+    { "type": "tool", "label": "Read Week 1 – Cell structure.docx" },
+    { "type": "tool", "label": "Read Week 2 – Membranes.docx" },
+    { "type": "tool", "label": "Read Reading – Cell membrane.pdf", "done": 0 },
+    { "type": "tool", "label": "Analyzed Osmosis lab results.xlsx · 6 trials", "done": 1 },
+    { "type": "tool", "label": "Copied layout from Unit 2 – Genetics.pptx", "done": 2 },
+    { "type": "tool", "label": "Created Unit 3 – Cells.pptx", "done": 3 },
+    { "type": "file", "file": { "name": "Unit 3 – Cells.pptx", "kind": "pptx", "modified": "Just now", "size": "6.1 MB" } },
+    { "type": "caption", "text": "The finished deck is saved back into your folder.", "focus": "finder.file:Unit 3 – Cells.pptx" },
+    { "type": "reply", "text": "Your deck is saved in Unit 3 – Cells: 10 slides with speaker notes. Slide 6 charts the osmosis lab. Trial 4 gained mass in salt water, which doesn't fit the other five, so I flagged it on the slide instead of dropping it. Worth checking before Monday." },
+    { "type": "caption", "text": "Claude flags what it isn't sure about. Deciding what's right is still your call.", "focus": "claude.reply" },
+    { "type": "cursor", "to": "finder.file:Unit 3 – Cells.pptx", "click": true },
+    { "type": "open", "file": "Unit 3 – Cells.pptx", "deck": {
+      "slideCount": 10,
+      "slide": {
+        "number": 6,
+        "title": "Osmosis lab: mass change in 5% salt water",
+        "chart": {
+          "values": [-12, -14, -11, 3, -13, -12],
+          "unit": "%",
+          "flag": 3,
+          "note": "Check: gained mass"
+        },
+        "notes": "Ask: why would a potato slice lose mass in salt water? What might explain trial 4?"
+      }
+    } },
+    { "type": "caption", "text": "It's a normal file. Open it, check the flagged trial, edit what you'd teach differently.", "focus": "preview" },
+    { "type": "tryIt", "title": "Your turn", "text": "Pick one folder you'll work in this week. Give Claude the folder and an outcome, not a question.", "prompt": "Using the files in this folder, make me ___ for ___. Flag anything you're unsure about." }
+  ]
+}
