@@ -21,7 +21,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { REPLY_CPS, TYPE_CPS, type Message, type State } from "./engine";
+import { REPLY_CPS, TYPE_CPS, type AppName, type Message, type State } from "./engine";
 import type { Connector, Deck, FileKind } from "./types";
 import { AppIcon, ConnectorLogo } from "./Logos";
 import Typed from "./Typed";
@@ -150,7 +150,25 @@ function BatteryIcon({ level, charging }: Battery) {
   );
 }
 
-export function MenuBar() {
+const MENUS: Record<AppName, string[]> = {
+  Finder: ["File", "Edit", "View", "Go", "Window", "Help"],
+  Claude: ["File", "Edit", "View", "Window", "Help"],
+  Safari: ["File", "Edit", "View", "History", "Bookmarks", "Window", "Help"],
+  Keynote: [
+    "File",
+    "Edit",
+    "Insert",
+    "Slide",
+    "Format",
+    "Arrange",
+    "View",
+    "Play",
+    "Window",
+    "Help",
+  ],
+};
+
+export function MenuBar({ app }: { app: AppName }) {
   const now = useClock();
   const battery = useBattery();
   const pct = battery && Math.round(battery.level * 100);
@@ -158,12 +176,10 @@ export function MenuBar() {
   return (
     <div className={s.menuBar}>
       <div className={s.menuGroup}>
-        <b>Finder</b>
-        <span>File</span>
-        <span>Edit</span>
-        <span>View</span>
-        <span>Go</span>
-        <span>Window</span>
+        <b>{app}</b>
+        {MENUS[app].map((m) => (
+          <span key={m}>{m}</span>
+        ))}
       </div>
       <div className={s.menuGroup}>
         {battery && (

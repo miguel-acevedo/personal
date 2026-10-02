@@ -302,7 +302,7 @@ function Stage({
           transform: `scale(${scale})`,
         }}
       >
-        <MenuBar />
+        <MenuBar app={state.app} />
         {hasFinder && <Finder state={state} folder={spec.desktop.folder ?? ""} onPick={onPick} />}
         <Claude
           state={state}

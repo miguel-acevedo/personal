@@ -10,7 +10,19 @@ export type Message =
   | { kind: "reply"; text: string }
   | { kind: "drafts"; connector: string; items: Draft[] };
 
+export type AppName = "Finder" | "Claude" | "Safari" | "Keynote";
+
+// The app whose window a cursor target belongs to.
+function appOf(target: string): AppName {
+  if (target.startsWith("finder")) return "Finder";
+  if (target.startsWith("browser")) return "Safari";
+  if (target.startsWith("preview")) return "Keynote";
+  return "Claude";
+}
+
 export type State = {
+  // The frontmost app, which names the menu bar.
+  app: AppName;
   caption: { text: string; focus?: string } | null;
   cursor: { to: string | null; carry?: string; clickAt?: number };
   attached: string | null;
@@ -30,6 +42,7 @@ export type State = {
 
 export function initialState(spec: Spec): State {
   return {
+    app: spec.desktop.apps[0] === "finder" ? "Finder" : "Claude",
     caption: null,
     cursor: { to: null },
     attached: null,
@@ -59,10 +72,17 @@ export function apply(prev: State, step: Step, i: number): State {
     case "cursor":
       return {
         ...s,
+        // Dragging something across doesn't switch apps; arriving somewhere else does.
+        app: step.carry ? s.app : appOf(step.to),
         cursor: { to: step.to, carry: step.carry, clickAt: step.click ? i : undefined },
       };
     case "attach":
-      return { ...s, attached: step.folder, cursor: { ...s.cursor, carry: undefined } };
+      return {
+        ...s,
+        app: "Claude",
+        attached: step.folder,
+        cursor: { ...s.cursor, carry: undefined },
+      };
     case "type":
       return { ...s, composer: step.text };
     case "send":
@@ -85,7 +105,7 @@ export function apply(prev: State, step: Step, i: number): State {
     case "reply":
       return { ...s, messages: [...s.messages, { kind: "reply", text: step.text }] };
     case "open":
-      return { ...s, preview: { file: step.file, deck: step.deck } };
+      return { ...s, app: "Keynote", preview: { file: step.file, deck: step.deck } };
     case "tryIt":
       return { ...s, caption: null, tryIt: step };
     case "menu":
@@ -94,10 +114,16 @@ export function apply(prev: State, step: Step, i: number): State {
       return { ...s, directory: step.open, menu: null };
     case "auth":
       // A new window takes over, so the previous caption no longer points at anything.
-      return { ...s, caption: null, browser: { connector: step.connector, screen: step.screen } };
+      return {
+        ...s,
+        app: "Safari",
+        caption: null,
+        browser: { connector: step.connector, screen: step.screen },
+      };
     case "connect":
       return {
         ...s,
+        app: "Claude",
         browser: null,
         connectors: { ...s.connectors, [step.connector]: { connected: true, on: true } },
       };
