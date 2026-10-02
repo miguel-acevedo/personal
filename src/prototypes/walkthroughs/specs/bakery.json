@@ -5,12 +5,12 @@
   "desktop": {
     "apps": ["claude"],
     "connectors": [
-      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "mail",
+      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "gmail",
         "auth": { "provider": "Google", "url": "accounts.google.com", "account": "Maria Lopez", "email": "maria@hillsidebakery.com",
           "scopes": ["Read and search your email", "Create drafts in your mailbox"] } },
-      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "calendar" },
-      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "drive" },
-      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "chat" }
+      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "google-calendar" },
+      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "google-drive" },
+      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "slack" }
     ]
   },
   "steps": [

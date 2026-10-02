@@ -22,7 +22,7 @@ export type Deck = {
   };
 };
 
-export type ConnectorIcon = "mail" | "calendar" | "drive" | "chat";
+export type ConnectorIcon = "gmail" | "google-calendar" | "google-drive" | "slack";
 
 export type Connector = {
   name: string;

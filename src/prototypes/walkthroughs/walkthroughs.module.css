@@ -313,15 +313,14 @@
   place-items: center;
 }
 
-.dockIcon svg {
-  width: 28px;
-  height: 28px;
+.dockIcon img {
+  display: block;
 }
 
-.claudeGlyph {
-  font-family: Georgia, serif;
-  font-size: 28px;
-  font-weight: 600;
+/* Safari's round mark sits on a white tile, like the real dock icon. */
+.dockTile {
+  background: #fff;
+  border-radius: 12px;
 }
 
 /* ---------- Finder ---------- */
@@ -786,8 +785,8 @@
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  background: #f0eee6;
-  color: #5c594f;
+  background: #fff;
+  border: 1px solid #ece9e0;
   display: grid;
   place-items: center;
 }

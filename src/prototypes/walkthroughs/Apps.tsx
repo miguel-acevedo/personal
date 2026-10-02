@@ -7,27 +7,23 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Compass,
   FileSpreadsheet,
   FileText,
   Flag,
   Folder,
-  HardDrive,
   LibraryBig,
   LoaderCircle,
   Lock,
-  Mail,
-  MessageSquare,
   Paperclip,
   Plus,
   Presentation,
-  Calendar,
   Search,
   UserRound,
   X,
 } from "lucide-react";
 import { REPLY_CPS, TYPE_CPS, type Message, type State } from "./engine";
-import type { Connector, ConnectorIcon, Deck, FileKind } from "./types";
+import type { Connector, Deck, FileKind } from "./types";
+import { AppIcon, ConnectorLogo } from "./Logos";
 import Typed from "./Typed";
 import s from "./walkthroughs.module.css";
 
@@ -92,28 +88,19 @@ export function MenuBar() {
 
 export function Dock({ previewOpen, browserOpen }: { previewOpen: boolean; browserOpen: boolean }) {
   const items = [
-    { label: "Finder", icon: <Folder />, bg: "linear-gradient(#5ab0ff,#1d6fe0)", on: true },
-    { label: "Claude", icon: <span className={s.claudeGlyph}>C</span>, bg: "#d97757", on: true },
-    { label: "Mail", icon: <Mail />, bg: "linear-gradient(#6cc4ff,#1e88f0)" },
-    {
-      label: "Browser",
-      icon: <Compass />,
-      bg: "linear-gradient(#fff,#e6e6e6)",
-      dark: true,
-      on: browserOpen,
-    },
-    { label: "Calendar", icon: <Calendar />, bg: "#fff", dark: true },
-    { label: "Keynote", icon: <Presentation />, bg: "linear-gradient(#ffb057,#e9731c)", on: previewOpen },
+    { label: "Finder", icon: "finder.png", on: true },
+    { label: "Claude", icon: "claude.svg", on: true },
+    { label: "Mail", icon: "mail.png" },
+    { label: "Safari", icon: "safari.png", on: browserOpen, tile: true },
+    // Keynote joins the dock only once a deck is open, like a real app launching.
+    ...(previewOpen ? [{ label: "Keynote", icon: "keynote.png", on: true }] : []),
   ];
   return (
     <div className={s.dock}>
       {items.map((it) => (
         <div key={it.label} className={`${s.dockItem} ${it.on ? s.dockOn : ""}`}>
-          <div
-            className={s.dockIcon}
-            style={{ background: it.bg, color: it.dark ? "#555" : "#fff" }}
-          >
-            {it.icon}
+          <div className={`${s.dockIcon} ${it.tile ? s.dockTile : ""}`}>
+            <AppIcon name={it.icon} size={it.tile ? 41 : 52} />
           </div>
         </div>
       ))}
@@ -212,13 +199,6 @@ function group(messages: Message[]) {
   }
   return blocks;
 }
-
-const CONNECTOR_ICONS: Record<ConnectorIcon, ReactNode> = {
-  mail: <Mail size={16} />,
-  calendar: <Calendar size={16} />,
-  drive: <HardDrive size={16} />,
-  chat: <MessageSquare size={16} />,
-};
 
 export function Claude({
   state,
@@ -364,7 +344,7 @@ export function Claude({
               )}
               {on.map((c) => (
                 <span key={c.name} className={`${s.folderPill} ${s.folderAttached}`}>
-                  {CONNECTOR_ICONS[c.icon]} {c.name}
+                  <ConnectorLogo icon={c.icon} size={14} /> {c.name}
                 </span>
               ))}
             </div>
@@ -406,7 +386,7 @@ export function Claude({
                         ? { onClick: () => onPick(c.name), "data-pick": "" }
                         : {})}
                     >
-                      {CONNECTOR_ICONS[c.icon]} {c.name}
+                      <ConnectorLogo icon={c.icon} size={14} /> {c.name}
                       <span
                         className={`${s.switch} ${state.connectors[c.name]?.on ? s.switchOn : ""}`}
                       />
@@ -434,7 +414,9 @@ export function Claude({
                 const done = state.connectors[c.name]?.connected;
                 return (
                   <div key={c.name} className={s.connectorCard} data-wt={`directory.card:${c.name}`}>
-                    <span className={s.connectorIcon}>{CONNECTOR_ICONS[c.icon]}</span>
+                    <span className={s.connectorIcon}>
+                      <ConnectorLogo icon={c.icon} size={22} />
+                    </span>
                     <div className={s.connectorText}>
                       <b>{c.name}</b>
                       <span>{c.description}</span>
@@ -503,7 +485,7 @@ export function Browser({
                 <div className={s.scopesLabel}>This will allow Claude to:</div>
                 {auth.scopes.map((sc) => (
                   <div key={sc} className={s.scope}>
-                    {CONNECTOR_ICONS[connector.icon]} {sc}
+                    <Check size={14} /> {sc}
                   </div>
                 ))}
               </div>

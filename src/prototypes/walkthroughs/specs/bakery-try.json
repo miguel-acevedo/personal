@@ -5,10 +5,10 @@
   "desktop": {
     "apps": ["claude"],
     "connectors": [
-      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "mail", "connected": true },
-      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "calendar", "connected": true },
-      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "drive", "connected": true },
-      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "chat", "connected": true }
+      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "gmail", "connected": true },
+      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "google-calendar", "connected": true },
+      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "google-drive", "connected": true },
+      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "slack", "connected": true }
     ]
   },
   "steps": [
