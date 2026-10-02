@@ -12,6 +12,15 @@ function fmt(v: unknown): string {
   return JSON.stringify(v);
 }
 
+// Lists of files or connectors collapse to a count, so the steps stay in view.
+function summarize(desktop: Spec["desktop"]) {
+  return Object.fromEntries(
+    Object.entries(desktop).map(([k, v]) =>
+      Array.isArray(v) && typeof v[0] === "object" ? [k, `[${v.length} items]`] : [k, v],
+    ),
+  );
+}
+
 function highlight(json: string): ReactNode[] {
   const out: ReactNode[] = [];
   const re = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?)|\b(true|false|null)\b/g;
@@ -36,11 +45,13 @@ export default function SpecPanel({
   file,
   step,
   onJump,
+  picker,
 }: {
   spec: Spec;
   file: string;
   step: number;
   onJump: (i: number) => void;
+  picker?: ReactNode;
 }) {
   const box = useRef<HTMLDivElement>(null);
 
@@ -56,6 +67,7 @@ export default function SpecPanel({
   return (
     <section id="spec" className={s.spec}>
       <div className={s.specHeader}>
+        {picker}
         <div className={s.ioLabel}>Input · learner description</div>
         <p className={s.ioInput}>{spec.learner}</p>
         <div className={s.ioArrow}>↓ Drafted by Claude from this description</div>
@@ -74,7 +86,7 @@ export default function SpecPanel({
         ))}
         <div className={s.specLine}>
           {"  "}
-          {highlight(`"desktop": { "folder": ${JSON.stringify(desktop.folder)}, "files": [${desktop.files.length} items] },`)}
+          {highlight(`"desktop": ${fmt(summarize(desktop)).replace(/"(\[\d+ items\])"/g, "$1")},`)}
         </div>
         <div className={s.specLine}>{'  "steps": ['}</div>
         {steps.map((st, i) => (

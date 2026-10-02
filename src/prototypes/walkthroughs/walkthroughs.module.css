@@ -208,6 +208,7 @@
 /* ---------- Window chrome ---------- */
 .window {
   position: absolute;
+  isolation: isolate; /* keeps menus and the directory inside their own window */
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -418,6 +419,7 @@
 
 /* ---------- Claude (stylized, not a copy) ---------- */
 .claude {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -435,6 +437,12 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 16px 20px 8px;
+  transition: padding-bottom 0.25s ease;
+}
+
+/* Lift the latest messages above the open + menu, so a hint is never hidden behind it. */
+.conversationRaised {
+  padding-bottom: 190px;
 }
 
 .claudeEmpty {
@@ -535,6 +543,7 @@
 }
 
 .composer {
+  position: relative;
   margin: 8px 16px 16px;
   background: #fff;
   border: 1px solid #e0ddd2;
@@ -595,6 +604,416 @@
   color: #fff;
   display: grid;
   place-items: center;
+}
+
+.composerPills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.composerPills svg {
+  width: 13px;
+  height: 13px;
+}
+
+.plusButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #e0ddd2;
+  color: #6b675d;
+  display: grid;
+  place-items: center;
+}
+
+.composerPills .plusButton svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------- + menu ---------- */
+.menu,
+.submenu {
+  position: absolute;
+  width: 230px;
+  background: #fff;
+  border: 1px solid #e0ddd2;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  z-index: 10;
+  animation: rise 0.2s ease-out;
+}
+
+.menu {
+  left: 10px;
+  bottom: 50px;
+}
+
+.submenu {
+  left: calc(100% + 6px);
+  bottom: -6px;
+  width: 250px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #2b2a26;
+  white-space: nowrap;
+}
+
+.menuItem svg {
+  color: #6b675d;
+  flex: none;
+}
+
+.menuItemOn {
+  background: #f0eee6;
+}
+
+.menuChevron {
+  margin-left: auto;
+}
+
+.menuDivider {
+  height: 1px;
+  background: #ece9e0;
+  margin: 4px 6px;
+}
+
+.desktop .menuItem[data-pick] {
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  margin-left: auto;
+  width: 30px;
+  height: 18px;
+  flex: none;
+  border-radius: 999px;
+  background: #d6d3c9;
+  transition: background 0.25s ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: left 0.25s ease;
+}
+
+.switchOn {
+  background: #2f6fe0;
+}
+
+.switchOn::after {
+  left: 14px;
+}
+
+/* ---------- Connectors directory ---------- */
+.directory {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #faf9f5;
+  padding: 18px 20px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.directoryHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.directoryTitle {
+  font-family: Georgia, serif;
+  font-size: 24px;
+}
+
+.directorySearch {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e0ddd2;
+  background: #fff;
+  border-radius: 9px;
+  padding: 6px 10px;
+  color: #a19d92;
+}
+
+.directoryClose {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #5c594f;
+}
+
+.directoryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.connectorCard {
+  display: grid;
+  grid-template-columns: 36px 1fr 28px;
+  gap: 10px;
+  align-items: start;
+  background: #fff;
+  border: 1px solid #e6e3d8;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.connectorIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #f0eee6;
+  color: #5c594f;
+  display: grid;
+  place-items: center;
+}
+
+.connectorText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.35;
+}
+
+.connectorText b {
+  font-size: 14px;
+}
+
+.connectorText span {
+  font-size: 12px;
+  color: #5c594f;
+}
+
+.connectorText small {
+  font-size: 11px;
+  color: #8a867b;
+}
+
+.connectorAdd {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #e0ddd2;
+  color: #5c594f;
+  display: grid;
+  place-items: center;
+}
+
+.connectorDone {
+  background: #e3f3e8;
+  border-color: #c6e6d0;
+  color: #2f8a4c;
+  animation: pop 0.35s ease-out;
+}
+
+/* ---------- Drafts ---------- */
+.draft {
+  padding: 6px 0;
+  border-top: 1px solid #f0eee6;
+  animation: rise 0.3s ease-out both;
+}
+
+.draft:first-of-type {
+  border-top: none;
+}
+
+.draftHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.draftHead > span:not(.draftFlag) {
+  color: #5c594f;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.draftFlag {
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #a86b0c;
+  background: #fdf1dc;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.draftPreview {
+  font-size: 12px;
+  color: #8a867b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Sign-in browser ---------- */
+.browser {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.addressBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 12px 0;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #f0f0f2;
+  color: #555;
+  font-size: 12px;
+}
+
+.authCard {
+  width: 380px;
+  margin: 22px auto 0;
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  padding: 22px 24px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.authProvider {
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 14px;
+}
+
+.authTitle {
+  font-size: 20px;
+  line-height: 1.3;
+  color: #202124;
+}
+
+.authSub {
+  font-size: 13px;
+  color: #5f6368;
+  margin: 4px 0 16px;
+}
+
+.authAccount {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-top: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.authAccount div {
+  display: flex;
+  flex-direction: column;
+}
+
+.authAccount b {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.authAccount span {
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.avatar,
+.avatarGhost {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.avatar {
+  background: #7b5ea7;
+  color: #fff;
+  font-weight: 600;
+}
+
+.avatarGhost {
+  background: #f0f0f2;
+  color: #666;
+}
+
+.scopes {
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.scopesLabel {
+  font-size: 12px;
+  color: #5f6368;
+  margin-bottom: 6px;
+}
+
+.scope {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.scope svg {
+  width: 14px;
+  height: 14px;
+  color: #5f6368;
+}
+
+.authActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.authCancel {
+  padding: 7px 12px;
+  color: #2f6fe0;
+}
+
+.authAllow {
+  padding: 7px 20px;
+  border-radius: 999px;
+  background: #2f6fe0;
+  color: #fff;
+  font-weight: 500;
 }
 
 /* ---------- Preview ---------- */
@@ -926,6 +1345,34 @@
   margin-left: 6px;
   font-size: 14px;
   color: #a8a59e;
+}
+
+/* ---------- Learner picker ---------- */
+.picker {
+  margin-bottom: 12px;
+}
+
+.pickerOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.pickerOptions button {
+  border: 1px solid #333;
+  background: #1c1c1f;
+  color: #a8a59e;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pickerOptions .pickerOn {
+  background: #e9e7e2;
+  color: #111;
+  border-color: #e9e7e2;
 }
 
 /* ---------- Spec panel ---------- */

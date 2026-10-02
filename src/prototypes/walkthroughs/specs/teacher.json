@@ -3,6 +3,7 @@
   "title": "Hand Claude a folder, get back a lesson deck",
   "learner": "High school biology teacher. Unit notes, lab data and last year's slides live in one folder on their Mac.",
   "desktop": {
+    "apps": ["finder", "claude"],
     "folder": "Unit 3 – Cells",
     "path": ["Documents", "Biology", "Unit 3 – Cells"],
     "files": [

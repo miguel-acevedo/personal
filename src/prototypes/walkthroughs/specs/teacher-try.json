@@ -3,6 +3,7 @@
   "title": "Your turn: pick the folder for Claude",
   "learner": "Same teacher, new task. This time you choose what Claude gets to see.",
   "desktop": {
+    "apps": ["finder", "claude"],
     "folder": "Biology",
     "path": ["Documents", "Biology"],
     "files": [

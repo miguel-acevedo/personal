@@ -1,0 +1,41 @@
+{
+  "id": "bakery-try",
+  "title": "Your turn: switch on the right connector",
+  "learner": "Same bakery owner, new question. Gmail, Google Calendar, Google Drive and Slack are all connected, and you choose which one Claude uses.",
+  "desktop": {
+    "apps": ["claude"],
+    "connectors": [
+      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "mail", "connected": true },
+      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "calendar", "connected": true },
+      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "drive", "connected": true },
+      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "chat", "connected": true }
+    ]
+  },
+  "steps": [
+    { "type": "caption", "text": "Thursday looks busy. Ask Claude which customer calls are on it.", "focus": "claude.composer" },
+    { "type": "type", "text": "Which customer calls do I have on Thursday?" },
+    { "type": "cursor", "to": "claude.send", "click": true },
+    { "type": "send" },
+    { "type": "reply", "text": "I can't see your schedule yet. Switch on the connector that has it, from + → Connectors." },
+    { "type": "cursor", "to": "claude.plus", "click": true },
+    { "type": "menu", "open": "connectors" },
+    {
+      "type": "expect",
+      "action": "pick",
+      "prompt": "Switch on the connector Claude needs for this question. Click it in the menu.",
+      "answer": "Google Calendar",
+      "hints": {
+        "Gmail": "Gmail is on. I can see a few emails that mention calls, but not when they actually are. Which connector holds your appointments?",
+        "Google Drive": "Drive has your files, not your schedule. Try the one that keeps your appointments.",
+        "Slack": "Slack has your team's messages, not your customer appointments."
+      },
+      "fallback": "That one won't have your schedule. Try another."
+    },
+    { "type": "toggle", "connector": "Google Calendar", "on": true },
+    { "type": "menu", "open": null },
+    { "type": "tool", "label": "Searched Google Calendar · Thursday" },
+    { "type": "reply", "text": "Three customer calls on Thursday: 9:30 Jenna Park (cake tasting), 1:00 Café Lune (wholesale order), 4:15 Tom Alvarez (catering quote)." },
+    { "type": "caption", "text": "One connector, matched to the question. The rest stayed off because this question didn't need them.", "focus": "claude.composer" },
+    { "type": "tryIt", "title": "Nicely picked", "text": "Now with your own tools: switch on only what the task needs, then ask.", "prompt": "Using my calendar, list this week's customer appointments and flag any that overlap with a delivery." }
+  ]
+}

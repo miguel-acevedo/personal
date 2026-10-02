@@ -22,6 +22,20 @@ export type Deck = {
   };
 };
 
+export type ConnectorIcon = "mail" | "calendar" | "drive" | "chat";
+
+export type Connector = {
+  name: string;
+  by: string;
+  description: string;
+  icon: ConnectorIcon;
+  connected?: boolean;
+  // What the provider's sign-in window shows when the learner adds this connector.
+  auth?: { provider: string; url: string; account: string; email: string; scopes: string[] };
+};
+
+export type Draft = { to: string; subject: string; preview: string; flag?: string };
+
 // A walkthrough is a list of steps. The spec says what happens;
 // the engine decides how long each step takes.
 export type Step =
@@ -36,10 +50,19 @@ export type Step =
   | { type: "reply"; text: string }
   | { type: "open"; file: string; deck: Deck }
   | { type: "tryIt"; title: string; text: string; prompt: string }
+  // Claude's + menu, optionally with its Connectors submenu open.
+  | { type: "menu"; open: "plus" | "connectors" | null }
+  | { type: "directory"; open: boolean }
+  // The provider's sign-in window: pick an account, then review what Claude may access.
+  | { type: "auth"; connector: string; screen: "account" | "consent" }
+  | { type: "connect"; connector: string }
+  | { type: "toggle"; connector: string; on: boolean }
+  | { type: "drafts"; connector: string; items: Draft[] }
   // Waits for the learner instead of playing. Wrong answers get a hint from Claude.
+  // "drop": drag a folder onto Claude. "pick": switch on a connector.
   | {
       type: "expect";
-      action: "drop";
+      action: "drop" | "pick";
       prompt: string;
       answer: string;
       hints: Record<string, string>;
@@ -50,6 +73,12 @@ export type Spec = {
   id: string;
   title: string;
   learner: string;
-  desktop: { folder: string; path: string[]; files: FinderFile[] };
+  desktop: {
+    apps: ("finder" | "claude")[];
+    folder?: string;
+    path?: string[];
+    files?: FinderFile[];
+    connectors?: Connector[];
+  };
   steps: Step[];
 };

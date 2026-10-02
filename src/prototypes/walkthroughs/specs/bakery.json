@@ -1,0 +1,55 @@
+{
+  "id": "bakery",
+  "title": "Connect Gmail, get customer replies drafted",
+  "learner": "Owns a small bakery that takes custom orders by email. Customer questions pile up in Gmail between bakes, and they've never connected Claude to another tool.",
+  "desktop": {
+    "apps": ["claude"],
+    "connectors": [
+      { "name": "Gmail", "by": "Google", "description": "Draft replies, summarize threads, and search your inbox", "icon": "mail",
+        "auth": { "provider": "Google", "url": "accounts.google.com", "account": "Maria Lopez", "email": "maria@hillsidebakery.com",
+          "scopes": ["Read and search your email", "Create drafts in your mailbox"] } },
+      { "name": "Google Calendar", "by": "Google", "description": "See your schedule and find open times", "icon": "calendar" },
+      { "name": "Google Drive", "by": "Google", "description": "Search and read your files", "icon": "drive" },
+      { "name": "Slack", "by": "Slack", "description": "Search messages and channels", "icon": "chat" }
+    ]
+  },
+  "steps": [
+    { "type": "caption", "text": "Your customer emails live in Gmail. Claude can't see them until you connect it.", "focus": "claude" },
+    { "type": "cursor", "to": "claude.plus", "click": true },
+    { "type": "menu", "open": "plus" },
+    { "type": "cursor", "to": "claude.menu.connectors" },
+    { "type": "menu", "open": "connectors" },
+    { "type": "caption", "text": "Connectors link Claude to tools you already use. None are connected yet.", "focus": "claude.connectors" },
+    { "type": "cursor", "to": "claude.menu.browse", "click": true },
+    { "type": "directory", "open": true },
+    { "type": "caption", "text": "Find Gmail and add it.", "focus": "directory.card:Gmail" },
+    { "type": "cursor", "to": "directory.add:Gmail", "click": true },
+    { "type": "auth", "connector": "Gmail", "screen": "account" },
+    { "type": "cursor", "to": "browser.account", "click": true },
+    { "type": "auth", "connector": "Gmail", "screen": "consent" },
+    { "type": "caption", "text": "Google lists what Claude may do. Read it, then allow.", "focus": "browser.scopes" },
+    { "type": "cursor", "to": "browser.allow", "click": true },
+    { "type": "connect", "connector": "Gmail" },
+    { "type": "caption", "text": "Gmail is connected.", "focus": "directory.card:Gmail" },
+    { "type": "cursor", "to": "directory.close", "click": true },
+    { "type": "directory", "open": false },
+    { "type": "caption", "text": "Gmail is on for this chat. Now ask for the outcome, the way you'd brief an assistant.", "focus": "claude.composer" },
+    { "type": "type", "text": "Find customer emails from this week that are still waiting on a reply, and draft a response to each. Keep them short and friendly, like my past replies." },
+    { "type": "cursor", "to": "claude.send", "click": true },
+    { "type": "send" },
+    { "type": "tool", "label": "Searched Gmail · this week, from customers" },
+    { "type": "tool", "label": "Found 4 threads waiting on a reply" },
+    { "type": "tool", "label": "Read your last 20 sent replies for tone" },
+    { "type": "tool", "label": "Created 4 drafts in Gmail" },
+    { "type": "reply", "text": "Four customers are waiting on you. I saved a draft for each in Gmail, and nothing has been sent. Priya's wholesale question needs your price, so I left it blank instead of guessing." },
+    { "type": "drafts", "connector": "Gmail", "items": [
+      { "to": "Jenna Park", "subject": "Re: Birthday cake for Saturday", "preview": "Hi Jenna! Saturday works. Your two-tier chocolate cake will be ready for pickup from 10 am…" },
+      { "to": "Marcus Webb", "subject": "Re: Gluten-free cupcakes?", "preview": "Hi Marcus, we do! Our gluten-free cupcakes come out fresh every Thursday…" },
+      { "to": "Priya Shah", "subject": "Re: Wholesale for Café Lune", "preview": "Hi Priya, thanks for thinking of us! For four dozen a week, our price is ___ per dozen…", "flag": "Add your price" },
+      { "to": "Tom Alvarez", "subject": "Re: Order #1042 pickup", "preview": "Hi Tom, your order is all set. Pick it up any time after 2 pm on Friday…" }
+    ] },
+    { "type": "caption", "text": "These are drafts. Nothing goes out until you open Gmail and send it.", "focus": "claude.drafts" },
+    { "type": "caption", "text": "Claude left the price blank instead of guessing. That part is your call.", "focus": "claude.reply" },
+    { "type": "tryIt", "title": "Your turn", "text": "Connect the tool where your work already lives, then ask for an outcome you can check before anything goes out.", "prompt": "Look through my Gmail for customers still waiting on a reply this week, and draft a response to each. Don't send anything." }
+  ]
+}

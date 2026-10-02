@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type ReactNode } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
-import { duration, stateAt, type State } from "./engine";
+import { duration, stateAt, withHint, type State } from "./engine";
 import type { Spec } from "./types";
-import { Claude, Dock, Finder, MenuBar, Preview } from "./Apps";
+import { Browser, Claude, Dock, Finder, LAYOUT, MenuBar, Preview } from "./Apps";
 import SpecPanel from "./SpecPanel";
 import s from "./walkthroughs.module.css";
 
@@ -12,13 +12,37 @@ const H = 800;
 type Rect = { x: number; y: number; w: number; h: number };
 type Mode = "watch" | "try";
 
-export default function Walkthroughs({
-  specs,
-}: {
-  specs: Record<Mode, { spec: Spec; file: string }>;
-}) {
+export type Example = {
+  id: string;
+  label: string;
+  who: string;
+} & Record<Mode, { spec: Spec; file: string }>;
+
+export default function Walkthroughs({ examples }: { examples: Example[] }) {
   const [mode, setMode] = useState<Mode>("watch");
+  const [exampleId, setExampleId] = useState(examples[0].id);
+  const example = examples.find((e) => e.id === exampleId) ?? examples[0];
   const other: Mode = mode === "watch" ? "try" : "watch";
+
+  const picker = (
+    <div className={s.picker}>
+      <div className={s.ioLabel}>Learner</div>
+      <div className={s.pickerOptions}>
+        {examples.map((e) => (
+          <button
+            key={e.id}
+            className={e.id === example.id ? s.pickerOn : ""}
+            onClick={() => {
+              setExampleId(e.id);
+              setMode("watch");
+            }}
+          >
+            {e.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className={s.page}>
@@ -27,8 +51,8 @@ export default function Walkthroughs({
           <div className={s.eyebrow}>Claude walkthrough · prototype</div>
           <h1 className={s.h1}>Watch it once, then do it yourself</h1>
           <p className={s.learner}>
-            A walkthrough and an exercise for a high school biology teacher, both played by one
-            small engine from a JSON spec.
+            A walkthrough and an exercise for {example.who}, both played by one small engine from
+            a JSON spec.
           </p>
           <nav className={s.tabs}>
             <button className={mode === "watch" ? s.tabOn : ""} onClick={() => setMode("watch")}>
@@ -44,8 +68,9 @@ export default function Walkthroughs({
         </header>
 
         <Player
-          key={mode}
-          {...specs[mode]}
+          key={`${example.id}-${mode}`}
+          {...example[mode]}
+          picker={picker}
           next={{
             label: mode === "watch" ? "Try it yourself" : "Watch the walkthrough",
             go: () => setMode(other),
@@ -64,28 +89,23 @@ export default function Walkthroughs({
 function Player({
   spec,
   file,
+  picker,
   next,
 }: {
   spec: Spec;
   file: string;
+  picker: ReactNode;
   next: { label: string; go: () => void };
 }) {
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [run, setRun] = useState(0);
   const [flash, setFlash] = useState(0);
-  const [hint, setHint] = useState<{ folder: string; text: string } | null>(null);
+  const [hint, setHint] = useState<string | null>(null);
   const last = spec.steps.length - 1;
 
   const base = useMemo(() => stateAt(spec, step), [spec, step]);
-  // A wrong answer shows the dropped folder and Claude's hint on top of the spec state.
-  const state: State = hint
-    ? {
-        ...base,
-        attached: hint.folder,
-        messages: [...base.messages, { kind: "reply", text: hint.text }],
-      }
-    : base;
+  const state = hint ? withHint(base, hint) : base;
 
   useEffect(() => {
     const d = duration(spec.steps[step]);
@@ -117,7 +137,7 @@ function Player({
     const w = base.waiting;
     if (!w || !name) return;
     if (name === w.answer) jump(step + 1);
-    else setHint({ folder: name, text: w.hints[name] ?? w.fallback });
+    else setHint(name);
   };
 
   const waiting = !!base.waiting;
@@ -187,7 +207,7 @@ function Player({
       </div>
 
       <aside className={s.side}>
-        <SpecPanel spec={spec} file={file} step={step} onJump={jump} />
+        <SpecPanel spec={spec} file={file} step={step} onJump={jump} picker={picker} />
       </aside>
     </>
   );
@@ -215,6 +235,9 @@ function Stage({
   const [scale, setScale] = useState(1);
   const [cursor, setCursor] = useState({ x: W / 2, y: H / 2 });
   const [focus, setFocus] = useState<Rect | null>(null);
+  const hasFinder = spec.desktop.apps.includes("finder");
+  const connectors = spec.desktop.connectors ?? [];
+  const signIn = connectors.find((c) => c.name === state.browser?.connector && c.auth);
 
   useEffect(() => {
     const el = wrap.current!;
@@ -280,10 +303,17 @@ function Stage({
         }}
       >
         <MenuBar />
-        <Finder state={state} folder={spec.desktop.folder} onPick={onPick} />
-        <Claude state={state} onDrop={onPick} />
+        {hasFinder && <Finder state={state} folder={spec.desktop.folder ?? ""} onPick={onPick} />}
+        <Claude
+          state={state}
+          connectors={connectors}
+          box={hasFinder ? LAYOUT.claude : LAYOUT.claudeSolo}
+          showFolder={hasFinder}
+          onPick={onPick}
+        />
         {state.preview && <Preview {...state.preview} />}
-        <Dock previewOpen={!!state.preview} />
+        {signIn && <Browser connector={signIn} screen={state.browser!.screen} />}
+        <Dock previewOpen={!!state.preview} browserOpen={!!signIn} />
 
         <div
           className={s.focus}

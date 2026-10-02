@@ -1,6 +1,8 @@
 import type { DragEvent, ReactNode } from "react";
 import {
   ArrowUp,
+  Blocks,
+  Briefcase,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -10,13 +12,22 @@ import {
   FileText,
   Flag,
   Folder,
+  HardDrive,
+  LibraryBig,
   LoaderCircle,
+  Lock,
   Mail,
+  MessageSquare,
+  Paperclip,
+  Plus,
   Presentation,
   Calendar,
+  Search,
+  UserRound,
+  X,
 } from "lucide-react";
 import { REPLY_CPS, TYPE_CPS, type Message, type State } from "./engine";
-import type { Deck, FileKind } from "./types";
+import type { Connector, ConnectorIcon, Deck, FileKind } from "./types";
 import Typed from "./Typed";
 import s from "./walkthroughs.module.css";
 
@@ -25,6 +36,9 @@ type Box = { x: number; y: number; w: number; h: number };
 export const LAYOUT = {
   finder: { x: 36, y: 60, w: 560, h: 330 },
   claude: { x: 628, y: 44, w: 616, h: 600 },
+  // Claude on its own, when the desktop has no Finder.
+  claudeSolo: { x: 290, y: 44, w: 700, h: 600 },
+  browser: { x: 400, y: 110, w: 480, h: 450 },
   preview: { x: 70, y: 196, w: 600, h: 404 },
 } satisfies Record<string, Box>;
 
@@ -76,12 +90,18 @@ export function MenuBar() {
   );
 }
 
-export function Dock({ previewOpen }: { previewOpen: boolean }) {
+export function Dock({ previewOpen, browserOpen }: { previewOpen: boolean; browserOpen: boolean }) {
   const items = [
     { label: "Finder", icon: <Folder />, bg: "linear-gradient(#5ab0ff,#1d6fe0)", on: true },
     { label: "Claude", icon: <span className={s.claudeGlyph}>C</span>, bg: "#d97757", on: true },
     { label: "Mail", icon: <Mail />, bg: "linear-gradient(#6cc4ff,#1e88f0)" },
-    { label: "Browser", icon: <Compass />, bg: "linear-gradient(#fff,#e6e6e6)", dark: true },
+    {
+      label: "Browser",
+      icon: <Compass />,
+      bg: "linear-gradient(#fff,#e6e6e6)",
+      dark: true,
+      on: browserOpen,
+    },
     { label: "Calendar", icon: <Calendar />, bg: "#fff", dark: true },
     { label: "Keynote", icon: <Presentation />, bg: "linear-gradient(#ffb057,#e9731c)", on: previewOpen },
   ];
@@ -193,19 +213,36 @@ function group(messages: Message[]) {
   return blocks;
 }
 
+const CONNECTOR_ICONS: Record<ConnectorIcon, ReactNode> = {
+  mail: <Mail size={16} />,
+  calendar: <Calendar size={16} />,
+  drive: <HardDrive size={16} />,
+  chat: <MessageSquare size={16} />,
+};
+
 export function Claude({
   state,
-  onDrop,
+  connectors,
+  box,
+  showFolder,
+  onPick,
 }: {
   state: State;
-  onDrop?: (name: string) => void;
+  connectors: Connector[];
+  box: Box;
+  showFolder: boolean;
+  onPick?: (name: string) => void;
 }) {
   const blocks = group(state.messages);
   const lastReply = blocks.filter((b) => b.kind === "reply").length - 1;
   let replyIndex = -1;
+  const action = state.waiting?.action;
+  const onDrop = action === "drop" ? onPick : undefined;
+  const connected = connectors.filter((c) => state.connectors[c.name]?.connected);
+  const on = connectors.filter((c) => state.connectors[c.name]?.on);
 
   return (
-    <Window id="claude" box={LAYOUT.claude} title="Claude">
+    <Window id="claude" box={box} title="Claude">
       <div
         className={s.claude}
         onDragOver={onDrop && ((e) => e.preventDefault())}
@@ -217,7 +254,10 @@ export function Claude({
           })
         }
       >
-        <div className={s.conversation} data-wt="claude.conversation">
+        <div
+          className={`${s.conversation} ${state.menu ? s.conversationRaised : ""}`}
+          data-wt="claude.conversation"
+        >
           {blocks.length === 0 && (
             <div className={s.claudeEmpty}>What should we work on?</div>
           )}
@@ -256,6 +296,32 @@ export function Claude({
                   ))}
                 </div>
               );
+            if (b.kind === "drafts")
+              return (
+                <div key={i} className={s.plan} data-wt="claude.drafts">
+                  <div className={s.cardLabel}>
+                    {b.items.length} drafts · saved in {b.connector} · not sent
+                  </div>
+                  {b.items.map((d, j) => (
+                    <div
+                      key={d.to}
+                      className={s.draft}
+                      style={{ animationDelay: `${j * 0.35}s` }}
+                    >
+                      <div className={s.draftHead}>
+                        <b>{d.to}</b>
+                        <span>{d.subject}</span>
+                        {d.flag && (
+                          <span className={s.draftFlag}>
+                            <Flag size={10} /> {d.flag}
+                          </span>
+                        )}
+                      </div>
+                      <div className={s.draftPreview}>{d.preview}</div>
+                    </div>
+                  ))}
+                </div>
+              );
             replyIndex++;
             return (
               <div
@@ -281,19 +347,174 @@ export function Claude({
             )}
           </div>
           <div className={s.composerBar}>
-            {state.attached ? (
-              <span className={`${s.folderPill} ${s.folderAttached}`}>
-                <Folder size={13} fill="#7cb8f5" color="#4a90d9" /> {state.attached}
+            <div className={s.composerPills}>
+              <span className={s.plusButton} data-wt="claude.plus">
+                <Plus size={15} />
               </span>
-            ) : (
-              <span className={s.folderPill}>
-                <Folder size={13} /> {onDrop ? "Drop a folder here" : "Work in a folder"}
-              </span>
-            )}
+              {state.attached ? (
+                <span className={`${s.folderPill} ${s.folderAttached}`}>
+                  <Folder size={13} fill="#7cb8f5" color="#4a90d9" /> {state.attached}
+                </span>
+              ) : (
+                showFolder && (
+                  <span className={s.folderPill}>
+                    <Folder size={13} /> {onDrop ? "Drop a folder here" : "Work in a folder"}
+                  </span>
+                )
+              )}
+              {on.map((c) => (
+                <span key={c.name} className={`${s.folderPill} ${s.folderAttached}`}>
+                  {CONNECTOR_ICONS[c.icon]} {c.name}
+                </span>
+              ))}
+            </div>
             <span className={s.send} data-wt="claude.send">
               <ArrowUp size={16} />
             </span>
           </div>
+
+          {state.menu && (
+            <div className={s.menu} data-wt="claude.menu">
+              <div className={s.menuItem}>
+                <Paperclip size={15} /> Add files or photos
+              </div>
+              <div className={s.menuItem}>
+                <Folder size={15} /> Add folder
+              </div>
+              <div
+                className={`${s.menuItem} ${state.menu === "connectors" ? s.menuItemOn : ""}`}
+                data-wt="claude.menu.connectors"
+              >
+                <Blocks size={15} /> Connectors <ChevronRight size={14} className={s.menuChevron} />
+              </div>
+
+              {state.menu === "connectors" && (
+                <div className={s.submenu} data-wt="claude.connectors">
+                  <div className={s.menuItem} data-wt="claude.menu.browse">
+                    <LibraryBig size={15} /> Browse connectors
+                  </div>
+                  <div className={s.menuItem}>
+                    <Briefcase size={15} /> Manage connectors
+                  </div>
+                  {connected.length > 0 && <div className={s.menuDivider} />}
+                  {connected.map((c) => (
+                    <div
+                      key={c.name}
+                      className={s.menuItem}
+                      data-wt={`connector:${c.name}`}
+                      {...(action === "pick" && onPick
+                        ? { onClick: () => onPick(c.name), "data-pick": "" }
+                        : {})}
+                    >
+                      {CONNECTOR_ICONS[c.icon]} {c.name}
+                      <span
+                        className={`${s.switch} ${state.connectors[c.name]?.on ? s.switchOn : ""}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {state.directory && (
+          <div className={s.directory} data-wt="directory">
+            <div className={s.directoryHead}>
+              <span className={s.directoryTitle}>Connectors</span>
+              <span className={s.directorySearch}>
+                <Search size={13} /> Search connectors
+              </span>
+              <span className={s.directoryClose} data-wt="directory.close">
+                <X size={16} />
+              </span>
+            </div>
+            <div className={s.directoryGrid}>
+              {connectors.map((c) => {
+                const done = state.connectors[c.name]?.connected;
+                return (
+                  <div key={c.name} className={s.connectorCard} data-wt={`directory.card:${c.name}`}>
+                    <span className={s.connectorIcon}>{CONNECTOR_ICONS[c.icon]}</span>
+                    <div className={s.connectorText}>
+                      <b>{c.name}</b>
+                      <span>{c.description}</span>
+                      <small>by {c.by}</small>
+                    </div>
+                    <span
+                      className={`${s.connectorAdd} ${done ? s.connectorDone : ""}`}
+                      data-wt={`directory.add:${c.name}`}
+                    >
+                      {done ? <Check size={15} /> : <Plus size={15} />}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </Window>
+  );
+}
+
+// The provider's sign-in page, kept generic: an account to continue as, then the
+// permissions Claude is asking for. No password field and no provider branding.
+export function Browser({
+  connector,
+  screen,
+}: {
+  connector: Connector;
+  screen: "account" | "consent";
+}) {
+  const auth = connector.auth!;
+  return (
+    <Window id="browser" box={LAYOUT.browser} title={`Sign in · ${auth.provider}`}>
+      <div className={s.browser}>
+        <div className={s.addressBar}>
+          <Lock size={11} /> {auth.url}
+        </div>
+        <div className={s.authCard}>
+          <div className={s.authProvider}>{auth.provider}</div>
+          {screen === "account" ? (
+            <>
+              <div className={s.authTitle}>Choose an account</div>
+              <div className={s.authSub}>to continue to Claude</div>
+              <div className={s.authAccount} data-wt="browser.account">
+                <span className={s.avatar}>{auth.account[0]}</span>
+                <div>
+                  <b>{auth.account}</b>
+                  <span>{auth.email}</span>
+                </div>
+              </div>
+              <div className={s.authAccount}>
+                <span className={s.avatarGhost}>
+                  <UserRound size={14} />
+                </span>
+                <div>
+                  <span>Use another account</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={s.authTitle}>Claude wants access to your {auth.provider} account</div>
+              <div className={s.authSub}>{auth.email}</div>
+              <div className={s.scopes} data-wt="browser.scopes">
+                <div className={s.scopesLabel}>This will allow Claude to:</div>
+                {auth.scopes.map((sc) => (
+                  <div key={sc} className={s.scope}>
+                    {CONNECTOR_ICONS[connector.icon]} {sc}
+                  </div>
+                ))}
+              </div>
+              <div className={s.authActions}>
+                <span className={s.authCancel}>Cancel</span>
+                <span className={s.authAllow} data-wt="browser.allow">
+                  Allow
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Window>
