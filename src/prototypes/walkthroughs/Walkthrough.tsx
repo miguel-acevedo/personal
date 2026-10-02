@@ -22,38 +22,41 @@ export default function Walkthroughs({
 
   return (
     <div className={s.page}>
-      <header className={s.header}>
-        <div className={s.eyebrow}>Claude walkthrough · prototype</div>
-        <h1 className={s.h1}>Watch it once, then do it yourself</h1>
-        <p className={s.learner}>
-          A walkthrough and an exercise for a high school biology teacher, both played by one
-          small engine from a JSON spec.
+      <div className={s.layout}>
+        <header className={s.header}>
+          <div className={s.eyebrow}>Claude walkthrough · prototype</div>
+          <h1 className={s.h1}>Watch it once, then do it yourself</h1>
+          <p className={s.learner}>
+            A walkthrough and an exercise for a high school biology teacher, both played by one
+            small engine from a JSON spec.
+          </p>
+          <nav className={s.tabs}>
+            <button className={mode === "watch" ? s.tabOn : ""} onClick={() => setMode("watch")}>
+              Watch
+            </button>
+            <button className={mode === "try" ? s.tabOn : ""} onClick={() => setMode("try")}>
+              Try it
+            </button>
+            <a className={s.specLink} href="#spec">
+              Spec ↓
+            </a>
+          </nav>
+        </header>
+
+        <Player
+          key={mode}
+          {...specs[mode]}
+          next={{
+            label: mode === "watch" ? "Try it yourself" : "Watch the walkthrough",
+            go: () => setMode(other),
+          }}
+        />
+
+        <p className={s.footnote}>
+          An unofficial prototype by <a href="https://mhacevedo.com">Miguel Acevedo</a>. The spec
+          format is small enough for a model to write from a learner&apos;s description.
         </p>
-        <nav className={s.tabs}>
-          <button className={mode === "watch" ? s.tabOn : ""} onClick={() => setMode("watch")}>
-            Watch
-          </button>
-          <button className={mode === "try" ? s.tabOn : ""} onClick={() => setMode("try")}>
-            Try it
-          </button>
-          <a href="#spec">Spec ↓</a>
-        </nav>
-      </header>
-
-      <Player
-        key={mode}
-        {...specs[mode]}
-        next={{
-          label: mode === "watch" ? "Try it yourself" : "Watch the walkthrough",
-          go: () => setMode(other),
-        }}
-      />
-
-      <p className={s.footnote}>
-        An unofficial prototype by <a href="https://mhacevedo.com">Miguel Acevedo</a>. The
-        spec format is small enough for a model to write from a learner&apos;s description;
-        these two were written by hand.
-      </p>
+      </div>
     </div>
   );
 }
@@ -112,39 +115,43 @@ function Player({
 
   return (
     <>
-      <Stage
-        key={run}
-        state={state}
-        spec={spec}
-        onPick={waiting ? pick : undefined}
-        onReplay={replay}
-        next={next}
-      />
+      <div className={s.main}>
+        <Stage
+          key={run}
+          state={state}
+          spec={spec}
+          onPick={waiting ? pick : undefined}
+          onReplay={replay}
+          next={next}
+        />
 
-      <p className={s.mobileCaption}>{state.caption?.text ?? state.tryIt?.text}</p>
+        <p className={s.mobileCaption}>{state.caption?.text ?? state.tryIt?.text}</p>
 
-      <div className={s.controls}>
-        <button
-          className={s.button}
-          onClick={() => setPlaying((p) => !p)}
-          disabled={step >= last || waiting}
-          aria-label={playing ? "Pause" : "Play"}
-        >
-          {playing && step < last && !waiting ? <Pause size={16} /> : <Play size={16} />}
-        </button>
-        <button className={s.button} onClick={replay} aria-label="Replay">
-          <RotateCcw size={16} />
-        </button>
-        <div className={s.progress}>
-          <div style={{ width: `${(step / last) * 100}%` }} />
+        <div className={s.controls}>
+          <button
+            className={s.button}
+            onClick={() => setPlaying((p) => !p)}
+            disabled={step >= last || waiting}
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            {playing && step < last && !waiting ? <Pause size={16} /> : <Play size={16} />}
+          </button>
+          <button className={s.button} onClick={replay} aria-label="Replay">
+            <RotateCcw size={16} />
+          </button>
+          <div className={s.progress}>
+            <div style={{ width: `${(step / last) * 100}%` }} />
+          </div>
+          <span className={s.stepCount}>
+            {waiting ? "Your move · " : ""}
+            {step + 1} / {last + 1}
+          </span>
         </div>
-        <span className={s.stepCount}>
-          {waiting ? "Your move · " : ""}
-          {step + 1} / {last + 1}
-        </span>
       </div>
 
-      <SpecPanel spec={spec} file={file} step={step} onJump={jump} />
+      <aside className={s.side}>
+        <SpecPanel spec={spec} file={file} step={step} onJump={jump} />
+      </aside>
     </>
   );
 }
@@ -170,8 +177,7 @@ function Stage({
 
   useEffect(() => {
     const el = wrap.current!;
-    const fit = () =>
-      setScale(Math.min(el.clientWidth / W, (window.innerHeight - 220) / H, 1));
+    const fit = () => setScale(Math.min(el.clientWidth / W, (window.innerHeight - 220) / H, 1));
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
@@ -232,7 +238,12 @@ function Stage({
           className={s.focus}
           style={
             focus
-              ? { left: focus.x - 8, top: focus.y - 8, width: focus.w + 16, height: focus.h + 16 }
+              ? {
+                  left: focus.x - 8,
+                  top: focus.y - 8,
+                  width: focus.w + 16,
+                  height: focus.h + 16,
+                }
               : { opacity: 0 }
           }
         />

@@ -56,8 +56,13 @@ export default function SpecPanel({
   return (
     <section id="spec" className={s.spec}>
       <div className={s.specHeader}>
-        <span className={s.specFile}>{file}</span>
-        <span>The spec this plays from. Click a step to jump to it.</span>
+        <div className={s.ioLabel}>Input · learner description</div>
+        <p className={s.ioInput}>{spec.learner}</p>
+        <div className={s.ioArrow}>↓ Drafted by Claude from this description</div>
+        <div className={s.ioLabel}>
+          Output · <span className={s.specFile}>{file}</span>
+        </div>
+        <p className={s.ioNote}>The spec the player runs. Click a step to jump to it.</p>
       </div>
       <div ref={box} className={s.specBody}>
         <div className={s.specLine}>{"{"}</div>
