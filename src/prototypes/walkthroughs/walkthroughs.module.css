@@ -10,7 +10,8 @@
 .header,
 .controls,
 .footnote,
-.mobileCaption {
+.mobileCaption,
+.spec {
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
@@ -681,7 +682,9 @@
   left: -4px;
   z-index: 80;
   pointer-events: none;
-  transition: transform 0.9s cubic-bezier(0.45, 0, 0.2, 1);
+  transition:
+    transform 0.9s cubic-bezier(0.45, 0, 0.2, 1),
+    opacity 0.3s ease;
 }
 
 .cursor svg {
@@ -779,6 +782,24 @@
   color: #5c594f;
 }
 
+.tryActions {
+  display: flex;
+  gap: 10px;
+}
+
+.tryGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #d8d4c8;
+  color: #5c594f;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 .tryButton {
   display: inline-flex;
   align-items: center;
@@ -790,6 +811,151 @@
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
+}
+
+/* ---------- Exercise ---------- */
+.desktop [data-pick] {
+  cursor: grab;
+}
+
+.desktop [data-pick]:hover {
+  outline: 2px solid rgba(47, 111, 224, 0.5);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+.dropTarget {
+  border: 2px dashed #d97757;
+  animation: dropPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes dropPulse {
+  50% {
+    box-shadow: 0 0 0 6px rgba(217, 119, 87, 0.15);
+  }
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.tabs button {
+  border: 1px solid #333;
+  background: #1c1c1f;
+  color: #a8a59e;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tabs .tabOn {
+  background: #e9e7e2;
+  color: #111;
+  border-color: #e9e7e2;
+}
+
+.tabs a {
+  margin-left: 6px;
+  font-size: 14px;
+  color: #a8a59e;
+}
+
+/* ---------- Spec panel ---------- */
+.spec {
+  margin-top: 22px;
+  border: 1px solid #2a2a2e;
+  border-radius: 12px;
+  background: #18181b;
+  overflow: hidden;
+}
+
+.specHeader {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-bottom: 1px solid #2a2a2e;
+  font-size: 13px;
+  color: #77746e;
+}
+
+.specFile {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #e9e7e2;
+}
+
+.specBody {
+  position: relative;
+  max-height: 340px;
+  overflow: auto;
+  padding: 10px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #a8a59e;
+}
+
+.specLine {
+  display: block;
+  width: 100%;
+  padding: 1px 14px 1px 40px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
+  position: relative;
+}
+
+.specStep {
+  padding-left: 52px;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.specStep:hover {
+  background: #202024;
+}
+
+.specActive {
+  background: #2a211d;
+  border-left-color: #d97757;
+}
+
+.specActive:hover {
+  background: #2a211d;
+}
+
+.specFuture {
+  opacity: 0.5;
+}
+
+.specIndex {
+  position: absolute;
+  left: 14px;
+  width: 26px;
+  text-align: right;
+  color: #55524d;
+}
+
+.jsonKey {
+  color: #8fb6e8;
+}
+
+.jsonString {
+  color: #d9b48a;
+}
+
+.jsonNumber {
+  color: #b5d79b;
 }
 
 /* ---------- Keyframes ---------- */

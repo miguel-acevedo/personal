@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { DragEvent, ReactNode } from "react";
 import {
   ArrowUp,
   Check,
@@ -102,18 +102,38 @@ export function Dock({ previewOpen }: { previewOpen: boolean }) {
 }
 
 export function FileIcon({ kind, size = 16 }: { kind: FileKind; size?: number }) {
+  if (kind === "folder") return <Folder size={size} fill="#7cb8f5" color="#4a90d9" />;
   if (kind === "xlsx") return <FileSpreadsheet size={size} color="#1e8a4c" />;
   if (kind === "pptx") return <Presentation size={size} color="#d0612b" />;
   return <FileText size={size} color={kind === "pdf" ? "#d93a2b" : "#2b6fd6"} />;
 }
 
-export function Finder({ state, folder }: { state: State; folder: string }) {
+// While the engine waits on an "expect" step, folders can be dragged (or clicked).
+function pickable(name: string, onPick?: (name: string) => void) {
+  if (!onPick) return {};
+  return {
+    draggable: true,
+    onDragStart: (e: DragEvent) => e.dataTransfer.setData("text/plain", name),
+    onClick: () => onPick(name),
+    "data-pick": "",
+  };
+}
+
+export function Finder({
+  state,
+  folder,
+  onPick,
+}: {
+  state: State;
+  folder: string;
+  onPick?: (name: string) => void;
+}) {
   return (
     <Window
       id="finder"
       box={LAYOUT.finder}
       title={
-        <span className={s.finderTitle} data-wt="finder.title">
+        <span className={s.finderTitle} data-wt="finder.title" {...pickable(folder, onPick)}>
           <Folder size={14} fill="#7cb8f5" color="#4a90d9" /> {folder}
         </span>
       }
@@ -123,7 +143,7 @@ export function Finder({ state, folder }: { state: State; folder: string }) {
         <div>
           <Clock size={13} /> Recents
         </div>
-        <div className={s.sidebarActive}>
+        <div className={s.sidebarActive} {...pickable("Documents", onPick)}>
           <Folder size={13} /> Documents
         </div>
         <div>
@@ -147,6 +167,7 @@ export function Finder({ state, folder }: { state: State; folder: string }) {
             key={f.name}
             data-wt={`finder.file:${f.name}`}
             className={`${s.finderRow} ${f.name === state.newFile ? s.finderNew : ""}`}
+            {...(f.kind === "folder" ? pickable(f.name, onPick) : {})}
           >
             <span className={s.finderName}>
               <FileIcon kind={f.kind} /> {f.name}
@@ -172,14 +193,30 @@ function group(messages: Message[]) {
   return blocks;
 }
 
-export function Claude({ state }: { state: State }) {
+export function Claude({
+  state,
+  onDrop,
+}: {
+  state: State;
+  onDrop?: (name: string) => void;
+}) {
   const blocks = group(state.messages);
   const lastReply = blocks.filter((b) => b.kind === "reply").length - 1;
   let replyIndex = -1;
 
   return (
     <Window id="claude" box={LAYOUT.claude} title="Claude">
-      <div className={s.claude}>
+      <div
+        className={s.claude}
+        onDragOver={onDrop && ((e) => e.preventDefault())}
+        onDrop={
+          onDrop &&
+          ((e) => {
+            e.preventDefault();
+            onDrop(e.dataTransfer.getData("text/plain"));
+          })
+        }
+      >
         <div className={s.conversation} data-wt="claude.conversation">
           {blocks.length === 0 && (
             <div className={s.claudeEmpty}>What should we work on?</div>
@@ -232,7 +269,10 @@ export function Claude({ state }: { state: State }) {
           })}
         </div>
 
-        <div className={s.composer} data-wt="claude.composer">
+        <div
+          className={`${s.composer} ${onDrop ? s.dropTarget : ""}`}
+          data-wt="claude.composer"
+        >
           <div className={s.composerText}>
             {state.composer ? (
               <Typed text={state.composer} cps={TYPE_CPS} caret />
@@ -247,7 +287,7 @@ export function Claude({ state }: { state: State }) {
               </span>
             ) : (
               <span className={s.folderPill}>
-                <Folder size={13} /> Work in a folder
+                <Folder size={13} /> {onDrop ? "Drop a folder here" : "Work in a folder"}
               </span>
             )}
             <span className={s.send} data-wt="claude.send">

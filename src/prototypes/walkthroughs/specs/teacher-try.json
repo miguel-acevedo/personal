@@ -1,0 +1,36 @@
+{
+  "id": "teacher-try",
+  "title": "Your turn: pick the folder for Claude",
+  "learner": "Same teacher, new task. This time you choose what Claude gets to see.",
+  "desktop": {
+    "folder": "Biology",
+    "path": ["Documents", "Biology"],
+    "files": [
+      { "name": "Unit 3 – Cells", "kind": "folder", "modified": "Today", "size": "6 items" },
+      { "name": "Unit 4 – Genetics", "kind": "folder", "modified": "Yesterday", "size": "5 items" },
+      { "name": "Unit 5 – Evolution", "kind": "folder", "modified": "Sep 12", "size": "2 items" },
+      { "name": "Grading", "kind": "folder", "modified": "Sep 30", "size": "86 items" }
+    ]
+  },
+  "steps": [
+    { "type": "caption", "text": "Monday's task: a review quiz for Unit 4.", "focus": "finder" },
+    {
+      "type": "expect",
+      "action": "drop",
+      "prompt": "Drag the folder Claude should work in onto the Claude window. You can also click it.",
+      "answer": "Unit 4 – Genetics",
+      "hints": {
+        "Documents": "That's your whole Documents folder: 1,240 files, most of them unrelated to this quiz. Can you give me something narrower?",
+        "Biology": "Closer, but Biology holds every unit plus your grading. Which folder has just what this quiz needs?",
+        "Unit 3 – Cells": "That's the unit we just finished. The quiz is for Unit 4.",
+        "Unit 5 – Evolution": "That's next unit's material. The quiz is for Unit 4.",
+        "Grading": "Grading has student work, not your Unit 4 notes. I'd leave it out unless you want the quiz based on past mistakes."
+      },
+      "fallback": "That folder doesn't look like it holds your Unit 4 material. Try another one."
+    },
+    { "type": "attach", "folder": "Unit 4 – Genetics" },
+    { "type": "reply", "text": "Got it: Unit 4 – Genetics, 5 files. Your notes, the Punnett square worksheet and the reading are all here, and nothing unrelated. What should the quiz look like?" },
+    { "type": "caption", "text": "That's the habit: the smallest folder that holds everything the task needs.", "focus": "claude.composer" },
+    { "type": "tryIt", "title": "Nicely scoped", "text": "Now do it with your own work. Pick the folder, then describe the outcome.", "prompt": "Using the files in this folder, make a 10-question review quiz for Unit 4. Mix multiple choice and short answer, and add an answer key." }
+  ]
+}

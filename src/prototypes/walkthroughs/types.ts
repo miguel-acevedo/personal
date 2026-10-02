@@ -1,4 +1,4 @@
-export type FileKind = "docx" | "xlsx" | "pdf" | "pptx";
+export type FileKind = "docx" | "xlsx" | "pdf" | "pptx" | "folder";
 
 export type FinderFile = {
   name: string;
@@ -35,7 +35,16 @@ export type Step =
   | { type: "file"; file: FinderFile }
   | { type: "reply"; text: string }
   | { type: "open"; file: string; deck: Deck }
-  | { type: "tryIt"; title: string; text: string; prompt: string };
+  | { type: "tryIt"; title: string; text: string; prompt: string }
+  // Waits for the learner instead of playing. Wrong answers get a hint from Claude.
+  | {
+      type: "expect";
+      action: "drop";
+      prompt: string;
+      answer: string;
+      hints: Record<string, string>;
+      fallback: string;
+    };
 
 export type Spec = {
   id: string;

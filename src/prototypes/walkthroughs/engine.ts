@@ -20,6 +20,7 @@ export type State = {
   newFile: string | null;
   preview: { file: string; deck: Deck } | null;
   tryIt: Extract<Step, { type: "tryIt" }> | null;
+  waiting: Extract<Step, { type: "expect" }> | null;
 };
 
 export function initialState(spec: Spec): State {
@@ -34,10 +35,13 @@ export function initialState(spec: Spec): State {
     newFile: null,
     preview: null,
     tryIt: null,
+    waiting: null,
   };
 }
 
-export function apply(s: State, step: Step, i: number): State {
+export function apply(prev: State, step: Step, i: number): State {
+  // Leaving an "expect" step clears its instruction caption.
+  const s = { ...prev, waiting: null, caption: prev.waiting ? null : prev.caption };
   switch (step.type) {
     case "caption":
       return { ...s, caption: { text: step.text, focus: step.focus } };
@@ -72,6 +76,8 @@ export function apply(s: State, step: Step, i: number): State {
       return { ...s, preview: { file: step.file, deck: step.deck } };
     case "tryIt":
       return { ...s, caption: null, tryIt: step };
+    case "expect":
+      return { ...s, caption: { text: step.prompt }, cursor: { to: null }, waiting: step };
   }
 }
 
@@ -104,6 +110,7 @@ export function duration(step: Step): number {
     case "open":
       return 1600;
     case "tryIt":
+    case "expect":
       return Infinity;
   }
 }
