@@ -48,7 +48,7 @@ export default function Walkthroughs({ examples }: { examples: Example[] }) {
     <div className={s.page}>
       <div className={s.layout}>
         <header className={s.header}>
-          <div className={s.eyebrow}>Claude walkthrough · prototype</div>
+          <div className={s.eyebrow}>Prototype</div>
           <h1 className={s.h1}>Watch it once, then do it yourself</h1>
           <p className={s.learner}>
             A walkthrough and an exercise for {example.who}, both played by one small engine from
